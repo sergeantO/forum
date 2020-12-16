@@ -5,7 +5,7 @@
       :src="article.src"
       class="white--text align-end"
       gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.9)"
-      height="200px"
+      height="150px"
     >
       <v-card-title>{{ article.title.toUpperCase() }}</v-card-title>
     </v-img>

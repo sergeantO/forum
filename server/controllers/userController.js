@@ -91,7 +91,7 @@ let login = async (req, res) => {
       payload,
       "randomString",
       {
-        expiresIn: 3600
+        expiresIn: 60 * 60 * 24
       },
       (err, accessToken) => {
         if (err) throw err;

@@ -2,8 +2,10 @@
   <v-app-bar
     app
     color="primary"
+    elevation=1
     dark
-    flat
+    min-height=100
+    height=100
     clipped-right
   >
     <!-- LOGO -->

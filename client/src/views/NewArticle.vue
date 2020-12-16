@@ -94,5 +94,8 @@ export default class NewArticle extends Vue {
 </script>
 
 <style scoped>
-
+#editorjs {
+  border-left: 1px solid rgba(0,0,0,.2);
+  margin-bottom: 15px;
+}
 </style>

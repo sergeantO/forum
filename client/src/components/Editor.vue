@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import EditorJS from '@editorjs/editorjs'
 // @ts-ignore
 import Header from '@editorjs/header'
@@ -13,16 +13,24 @@ import { OutputData } from '@editorjs/editorjs/types/data-formats'
 
 @Component
 export default class Editor extends Vue {
+  // @ts-ignore
+  @Prop({ default: false }) private readonly readMode: boolean
+
+  @Prop()
+  private readonly initData: OutputData = { blocks: [] }
+
   private editor!: EditorJS
 
   public mounted() {
     this.editor = new EditorJS({
       holder: 'editorjs',
-      placeholder: 'Let`s write an awesome story!',
+      placeholder: (this.readMode) ? '' : 'Let`s write an awesome story!',
+      readOnly: this.readMode,
       tools: {
         header: Header,
         list: List,
       },
+      data: this.initData,
     })
   }
 
@@ -40,9 +48,6 @@ export default class Editor extends Vue {
 </script>
 
 <style  scoped>
-#editorjs {
-  border-left: 1px solid rgba(0,0,0,.2);
-  margin-bottom: 15px;
-}
+
 </style>>
 
