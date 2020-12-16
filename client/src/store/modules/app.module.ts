@@ -3,7 +3,7 @@ import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
 
 type ArticleListType = Array<{
     id: number;
-    src: string;
+    image: string;
     title: string;
     subtitle: string;
     tags: string[];
@@ -57,7 +57,6 @@ class App extends VuexModule {
           return {
             ...article,
             path: '/article/' + article.id,
-            src: article.src || `https://picsum.photos/300/400?image=${ i + 1 }`,
           }
         })
 

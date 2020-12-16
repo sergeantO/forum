@@ -10,20 +10,8 @@
       label="Теги"
       hide-details
     ></v-combobox>
-    <v-file-input
-      v-model="image"
-      chips
-      show-size
-      truncate-length="20"
-      label="Image"
-      accept="image/png, image/jpeg, image/bmp"
-      :prepend-icon="icons.mdiCameraAccount"
-    ></v-file-input>
+    <UploadImage @uploaded='setFileName' />
     <Editor ref="editor"/>
-    <ArticlePrewiev 
-      v-if="IsReadyPreview"
-      :article="prewiev"
-    />
     <v-btn @click="save" color="primary">Save</v-btn>
   </v-container>
 </template>
@@ -33,40 +21,29 @@ import { Component, Ref, Vue } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
 const App = namespace('App');
 
-import ArticlePrewiev from '../components/ArticlePrewiev.vue'
 import Editor from '../components/Editor.vue'
 import { OutputData } from '@editorjs/editorjs/types/data-formats';
 import ArticleService from '../services/ArticleService'
-
-import {
-  mdiCameraAccount,
-} from '@mdi/js'
+import UploadImage from '../components/UploadImage.vue'
 
 @Component({
   components: {
     Editor,
-    ArticlePrewiev,
+    UploadImage,
   },
 })
 export default class NewArticle extends Vue {
   public $router: any
 
-  private icons = {
-    mdiCameraAccount,
-  }
   private title = ''
-  private image = null
-  private tags = ['Vuetify', 'Programming']
-  private prewiev: any = {}
+  private imageFileName = ''
+  private tags: string[] = []
 
   @Ref()
   private readonly editor!: Editor
 
-  get IsReadyPreview(): boolean {
-    return this.prewiev !== undefined &&
-      this.prewiev.title !== undefined &&
-      this.prewiev.sublile !== undefined &&
-      this.prewiev.tags !== undefined
+  private setFileName(filename: string) {
+    this.imageFileName = filename
   }
 
   private save() {
@@ -75,12 +52,9 @@ export default class NewArticle extends Vue {
         const data = {
           ...doc,
           title: this.title,
-          src: this.image,
+          image: this.imageFileName,
           tags: this.tags,
-          // subtitle: (<OutputData>doc).blocks.find(b => b.type === 'paragraph')!.data.text as string
         }
-        // this.prewiev = data
-        // console.log(data)
         ArticleService.create(data).then((response) => {
           if (response.status === 201) {
             this.$router.push('/')
@@ -95,7 +69,6 @@ export default class NewArticle extends Vue {
 
 <style scoped>
 #editorjs {
-  border-left: 1px solid rgba(0,0,0,.2);
   margin-bottom: 15px;
 }
 </style>

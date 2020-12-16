@@ -1,29 +1,29 @@
 <template>
   <div>
-    <div v-if="currentFile">
-      <div>
+    <v-row justify="center" align="center">
+      <v-col cols="10">
+        <v-file-input
+          chips
+          show-size
+          truncate-length="20"
+          label="Image"
+          accept="image/png, image/jpeg, image/bmp"
+          :prepend-icon="icons.mdiCameraAccount"
+          @change="selectFile"
+        ></v-file-input>
         <v-progress-linear
+          v-if="currentFile"
           v-model="progress"
-          color="light-blue"
-          height="25"
+          color="primary"
+          height="20"
           reactive
         >
           <strong>{{ progress }} %</strong>
         </v-progress-linear>
-      </div>
-    </div>
-
-    <v-row no-gutters justify="center" align="center">
-      <v-col cols="8">
-        <v-file-input
-          show-size
-          label="File input"
-          @change="selectFile"
-        ></v-file-input>
       </v-col>
 
-      <v-col cols="4" class="pl-2">
-        <v-btn color="success" dark small @click="upload">
+      <v-col cols="2">
+        <v-btn color="primary" dark block small @click="upload">
           Upload
           <v-icon right dark>mdi-cloud-upload</v-icon>
         </v-btn>
@@ -39,12 +39,20 @@
 <script>
 import UploadService from '../services/UploadFilesService';
 
+import {
+  mdiCameraAccount,
+} from '@mdi/js'
+
+
 export default {
   data() {
     return {
       currentFile: undefined,
       progress: 0,
       message: '',
+      icons: {
+        mdiCameraAccount,
+      },
     };
   },
 
@@ -53,6 +61,7 @@ export default {
       this.progress = 0;
       this.currentFile = file;
     },
+
     upload() {
       if (!this.currentFile) {
         this.message = 'Please select a file!';
@@ -65,7 +74,8 @@ export default {
         this.progress = Math.round((100 * event.loaded) / event.total);
       })
         .then((response) => {
-          this.message = response.data.message;
+          this.message = 'Изображение успешно загружено'
+          this.$emit('uploaded', response.data.filename)
         })
         .catch(() => {
           this.progress = 0;

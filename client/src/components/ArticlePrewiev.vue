@@ -1,8 +1,8 @@
 <template>
   <v-card outlined>
     <v-img 
-      v-if="article.src"
-      :src="article.src"
+      v-if="article.image"
+      :src="article.image"
       class="white--text align-end"
       gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.9)"
       height="150px"

@@ -7,8 +7,9 @@
     </v-row>
     <v-row>
       <v-img
+        v-if="image"
+        :src='image'
         height="550px"
-        src="https://cdn.pixabay.com/photo/2020/07/12/07/47/bee-5396362_1280.jpg"
         gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.9)"
       />
     </v-row>
@@ -39,11 +40,13 @@ export default class Article extends Vue {
 
   private editorData: object | null = null
   private title: string = ''
+  private image!: string
 
   private created() {
     ArticleService.getOne(this.id).then((data) => {
       this.editorData = data.editorData
       this.title = data.title
+      this.image = data.image || 'https://cdn.pixabay.com/photo/2020/07/12/07/47/bee-5396362_1280.jpg'
     })
   }
 

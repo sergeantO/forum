@@ -1,13 +1,13 @@
 const { Article } = require("../model/Article");
 
 let create = async (req, res) => {
-  const {time, blocks, version, title, tags } = req.body
+  const {time, blocks, version, title, tags, image } = req.body
   const author = req.user.id
   
   let article
   try {
     article = new Article({
-      time, blocks, version, title, tags, author
+      time, blocks, version, title, tags, author, image
     })
   
     await article.save()
@@ -37,6 +37,7 @@ let getList = async (req, res) => {
       subtitle: article.blocks.find((block) => block.type === 'paragraph').data.text,
       tags: article.tags,
       views: article.views,
+      image: article.image
     }
   })
 
@@ -47,8 +48,8 @@ let getOne = async (req, res) => {
   const articleID = req.params.id
   let article = await Article.findById(articleID).exec()
   console.log(article)
-  let { blocks, version, time, title } = article
-  res.status(200).json({ blocks, version, time, title });
+  let { blocks, version, time, title, image } = article
+  res.status(200).json({ blocks, version, time, title, image });
 }
 
 let update = async (req, res) => {
