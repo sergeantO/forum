@@ -49,14 +49,14 @@
           <v-btn
             :disabled="!valid"
             color="success"
-            @click="handleLogin"
+            @click="handleRegistration"
           >
             <v-progress-circular
               v-if="loading"
               indeterminate
               color="primary"
             ></v-progress-circular>
-            <span v-else>Registration</span>
+            <span v-else>Регистрация</span>
           </v-btn>
         </v-form>
       </v-flex>
@@ -105,32 +105,40 @@ export default class Invite extends Vue {
   @Auth.Action
   private login!: (data: any) => Promise<any>;
 
+  @Auth.Action
+  private register!: (data: any) => Promise<any>;
+
   private created() {
     if (this.isLoggedIn) {
       this.$router.push('/profile');
     }
   }
 
-  private handleLogin() {
+  private handleRegistration() {
     this.loading = true;
     const isValid = this.form.validate()
     if (!isValid) {
         this.loading = false;
         return;
     } else {
-      if (this.user.username && this.user.password) {
-        setTimeout(() => {
-          this.login(this.user)
+      if (this.user.username &&
+        this.user.email &&
+        this.user.password &&
+        this.user.invite
+      ) {
+          this.register(this.user)
             .then(
               (data) => {
-                this.$router.push('/profile');
+                this.message = 'Пользователь успешно зарегистрирован';
+                setTimeout(() => {
+                  this.$router.push('/profile');
+                }, 3000)
               },
               (error) => {
                 this.loading = false;
                 this.message = error;
               },
             );
-        }, 3000)
       }
     };
   }

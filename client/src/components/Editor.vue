@@ -3,33 +3,35 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import EditorJS from '@editorjs/editorjs'; 
-import Header from '@editorjs/header'; 
-import List from '@editorjs/list'; 
-import { OutputData } from '@editorjs/editorjs/types/data-formats';
+import { Component, Vue } from 'vue-property-decorator'
+import EditorJS from '@editorjs/editorjs'
+// @ts-ignore
+import Header from '@editorjs/header'
+// @ts-ignore
+import List from '@editorjs/list'
+import { OutputData } from '@editorjs/editorjs/types/data-formats'
 
 @Component
 export default class Editor extends Vue {
-  private editor!: EditorJS;
+  private editor!: EditorJS
 
-  public mounted () {
-    this.editor = new EditorJS({ 
-      holder: 'editorjs', 
+  public mounted() {
+    this.editor = new EditorJS({
+      holder: 'editorjs',
       placeholder: 'Let`s write an awesome story!',
-      tools: { 
-        header: Header, 
-        list: List 
-      }, 
+      tools: {
+        header: Header,
+        list: List,
+      },
     })
   }
 
-  async save(): Promise<OutputData> {
-    let data: OutputData = await this.editor.save().then((outputData) => {
+  public async save(): Promise<OutputData> {
+    const data: OutputData = await this.editor.save().then((outputData) => {
       return outputData
     }).catch((error) => {
       return { blocks: [] }
-      console.log('Saving failed: ', error)
+      // toDo вывести ошибку console.log('Saving failed: ', error)
     });
 
     return data

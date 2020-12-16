@@ -43,9 +43,9 @@ import {
 } from '@mdi/js'
 
 @Component({
-  components: { 
-    Editor, 
-    ArticlePrewiev, 
+  components: {
+    Editor,
+    ArticlePrewiev,
   },
 })
 export default class NewArticle extends Vue {
@@ -57,19 +57,20 @@ export default class NewArticle extends Vue {
   private tags = ['Vuetify', 'Programming']
   private prewiev: any = {}
 
-  @Ref() readonly editor!: Editor
+  @Ref()
+  private readonly editor!: Editor
 
-  get IsReadyPreview (): boolean {
-    return this.prewiev !== undefined && 
-      this.prewiev.title !== undefined && 
-      this.prewiev.sublile !== undefined && 
+  get IsReadyPreview(): boolean {
+    return this.prewiev !== undefined &&
+      this.prewiev.title !== undefined &&
+      this.prewiev.sublile !== undefined &&
       this.prewiev.tags !== undefined
   }
 
-  save() {
+  private save() {
     this.editor.save()
       .then((doc) => {
-        let data = {
+        const data = {
           ...doc,
           title: this.title,
           src: this.image,
@@ -78,11 +79,13 @@ export default class NewArticle extends Vue {
         }
         // this.prewiev = data
         // console.log(data)
-        ArticleService.create(data).then(response => {
+        ArticleService.create(data).then((response) => {
           if (response.status === 201) {
             this.$router.push('/')
           }
-        }).catch(err => console.error(err))
+        }).catch((err) => {
+          // console.error(err) // todo вывести плашку
+        })
       })
   }
 }

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import authHeader from './auth-header';
 
 const API_URL = 'http://localhost:4000/user/';
 
@@ -22,11 +23,18 @@ class AuthService {
     localStorage.removeItem('user');
   }
 
-  public register(username: string, email: string, password: string) {
+  public newInvite() {
+    return axios.get(API_URL + 'newInvite', { headers: authHeader() }).then((response) => {
+      return response.data.invitation
+    })
+  }
+
+  public register(username: string, email: string, password: string, invite: string) {
     return axios.post(API_URL + 'signup', {
       username,
       email,
       password,
+      invite,
     });
   }
 }

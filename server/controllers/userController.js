@@ -50,7 +50,7 @@ let signup = async (req, res) => {
           "randomString", {
               expiresIn: 10000
           },
-          async (err, token) => {
+          async (err, accessToken) => {
               if (err) throw err;
               await Invite.findOneAndDelete({_id: inviteID})
               res.status(200).json({

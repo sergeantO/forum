@@ -38,6 +38,11 @@
         </p>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col>
+        <GetInvite />
+      </v-col>
+    </v-row>
     
   </v-container>
 </template>
@@ -47,7 +52,11 @@ import { Component, Vue } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
 const Auth = namespace('User');
 
-@Component
+import GetInvite from '../components/getInvite.vue'
+
+@Component({
+  components: { GetInvite },
+})
 export default class Profile extends Vue {
   public $router: any; // bugfix
 
