@@ -39,13 +39,16 @@ let getList = async (req, res) => {
       views: article.views,
     }
   })
-  console.log(articles)
 
   res.status(200).json(articles);
 }
 
 let getOne = async (req, res) => {
-
+  const articleID = req.params.id
+  let article = await Article.findById(articleID).exec()
+  console.log(article)
+  let { blocks, version, time, title } = article
+  res.status(200).json({ blocks, version, time, title });
 }
 
 let update = async (req, res) => {

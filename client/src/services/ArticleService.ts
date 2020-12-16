@@ -9,7 +9,12 @@ class ArticleService {
   }
 
   public getOne(id: string) {
-    return axios.get(`${API_URL}/${id}`, { headers: authHeader() });
+    return axios.get(API_URL + id, { headers: authHeader() })
+      .then((response) => {
+        const { blocks, version, time, title } = response.data
+        const editorData = { blocks, version, time }
+        return { editorData, title }
+      });
   }
 
   // todo: типизировать данные

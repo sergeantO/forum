@@ -13,11 +13,9 @@ import { OutputData } from '@editorjs/editorjs/types/data-formats'
 
 @Component
 export default class Editor extends Vue {
-  // @ts-ignore
-  @Prop({ default: false }) private readonly readMode: boolean
+  @Prop({ default: false }) private readonly readMode!: boolean
 
-  @Prop()
-  private readonly initData: OutputData = { blocks: [] }
+  @Prop({ default: { blocks: [] } }) private readonly initData!: OutputData
 
   private editor!: EditorJS
 
@@ -35,12 +33,13 @@ export default class Editor extends Vue {
   }
 
   public async save(): Promise<OutputData> {
-    const data: OutputData = await this.editor.save().then((outputData) => {
-      return outputData
-    }).catch((error) => {
-      return { blocks: [] }
-      // toDo вывести ошибку console.log('Saving failed: ', error)
-    });
+    const data: OutputData = await this.editor.save()
+      .then((outputData) => {
+        return outputData
+      }).catch((error) => {
+        return { blocks: [] }
+        // toDo вывести ошибку console.log('Saving failed: ', error)
+      });
 
     return data
   }

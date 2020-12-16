@@ -2,7 +2,7 @@
   <v-container fluid class='pt-0'>
     <v-row>
       <v-col cols='8' offset="2">
-        <h1 class="my-7">article {{ id }} </h1>
+        <h1 class="my-7">{{ title }} </h1>
       </v-col>
     </v-row>
     <v-row>
@@ -15,7 +15,7 @@
     
     <v-row>
       <v-col cols='6' offset="2">
-        <Editor :readMode="true" />
+        <Editor v-if="editorData" :readMode="true" :initData="editorData" />
       </v-col>
     </v-row>
   </v-container>
@@ -24,16 +24,28 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { namespace } from 'vuex-class';
-const Auth = namespace('User');
+// import { namespace } from 'vuex-class';
+// const App = namespace('App');
 
 import Editor from '../components/Editor.vue'
+import ArticleService from '../services/ArticleService';
+
 
 @Component({
   components: { Editor },
 })
 export default class Article extends Vue {
   public $route: any; // bugfix
+
+  private editorData: object | null = null
+  private title: string = ''
+
+  private created() {
+    ArticleService.getOne(this.id).then((data) => {
+      this.editorData = data.editorData
+      this.title = data.title
+    })
+  }
 
   private get id() {
     return this.$route.params.id
