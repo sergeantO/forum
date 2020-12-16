@@ -16,6 +16,7 @@ type ArticleListType = Array<{
 class App extends VuexModule {
   public drawer = false
   public articleList: ArticleListType = []
+  public tags: string[] = []
 
   @Mutation
   public changeDrawer() {
@@ -35,6 +36,11 @@ class App extends VuexModule {
   @Mutation
   public setArticleList(articles: ArticleListType) {
     this.articleList = articles
+  }
+
+  @Mutation
+  public setTags(tags: string[]) {
+    this.tags = tags
   }
 
   @Action
@@ -65,7 +71,15 @@ class App extends VuexModule {
   }
 
   get articles() {
-    return this.articleList
+    if (this.tags.length === 0) {
+      return this.articleList
+    }
+
+    return this.articleList.filter((article) => {
+      return this.tags.some((tag) => {
+        return article.tags.includes(tag)
+      })
+    })
   }
 
 }

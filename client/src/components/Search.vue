@@ -29,23 +29,24 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-// import { namespace } from 'vuex-class';
+import { Component, Vue, Watch } from 'vue-property-decorator';
+import { namespace } from 'vuex-class';
+const App = namespace('App')
 
 import {
   mdiMagnify,
 } from '@mdi/js'
 
-// const Auth = namespace('User');
-// const App = namespace('App');
-
 @Component
 export default class Search extends Vue {
+  @App.Mutation
+  private setTags!: (tags: string[]) => void
+
   private icons = {
     search: mdiMagnify,
   }
 
-  private select = ['Vuetify', 'Programming']
+  private select: string[] = []
 
   private items = [
     'Programming',
@@ -55,6 +56,11 @@ export default class Search extends Vue {
   ]
 
   private isOpenSearch = false
+
+  @Watch('select')
+  private onChildChanged(val: string[], oldVal: string[]) {
+    this.setTags(val)
+  }
 
 }
 </script>
