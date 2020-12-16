@@ -22,12 +22,19 @@ import ArticlePrewiev from '../components/ArticlePrewiev.vue'
   components: { 'article-prewiev': ArticlePrewiev },
 })
 export default class Article extends Vue {
+  @App.Getter
+  public articles!: boolean;
+
+  @App.Action
+  private getArticles!: () => Promise<any>
+
   private icons = {
     mdiEye,
   }
 
-  @App.Getter
-  private articles!: boolean;
+  private created() {
+    this.getArticles()
+  }
 
 };
 </script>

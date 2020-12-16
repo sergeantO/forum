@@ -20,8 +20,28 @@ let create = async (req, res) => {
   });
 }
 
-let getAll = async (req, res) => {
+let getList = async (req, res) => {
+  const { tags, userID } = req.body
+  let articles
+  if (!tags && !userID) {
+    articles = await Article.find()
+  } else {
+    articles = await Article.find({ author:userID })
+  }
 
+  articles = articles.map(article => {
+    return {
+      id: article.id,
+      src: article.src,
+      title: article.title,
+      subtitle: article.blocks.find((block) => block.type === 'paragraph').data.text,
+      tags: article.tags,
+      views: article.views,
+    }
+  })
+  console.log(articles)
+
+  res.status(200).json(articles);
 }
 
 let getOne = async (req, res) => {
@@ -38,7 +58,7 @@ let remove = async (req, res) => {
 
 module.exports = {
   create,
-  getAll,
+  getList,
   getOne,
   update,
   remove

@@ -49,6 +49,8 @@ import {
   },
 })
 export default class NewArticle extends Vue {
+  public $router: any
+
   private icons = {
     mdiCameraAccount,
   }

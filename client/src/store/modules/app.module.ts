@@ -1,17 +1,21 @@
+import ArticleService from '@/services/ArticleService';
 import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
+
+type ArticleListType = Array<{
+    id: number;
+    src: string;
+    title: string;
+    subtitle: string;
+    tags: string[];
+    path: string;
+    views?: number
+}>
 
 
 @Module({ namespaced: true })
 class App extends VuexModule {
   public drawer = false
-  public articleList = Array.from(new Array(10)).map((e, i) => ({
-    id: i + 1,
-    src: `https://picsum.photos/300/400?image=${ i + 1 }`,
-    title: `article ${ i + 1 }`,
-    subtitle: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Deserunt accusantium laboriosam ullam doloribus blanditiis facilis fugit, minima veniam, ut voluptatibus id temporibus cumque fugiat qui vel perspiciatis adipisci! Quia, at itaque nobis ipsum magni expedita voluptatibus? Tempore, impedit doloribus? Eum numquam, beatae unde neque necessitatibus id error quam labore veniam.',
-    tags: ['tag1', 'tag2', 'tag3'],
-    path: '/article/' + (i + 1),
-  }))
+  public articleList: ArticleListType = []
 
   @Mutation
   public changeDrawer() {
@@ -28,9 +32,32 @@ class App extends VuexModule {
     this.drawer = true
   }
 
+  @Mutation
+  public setArticleList(articles: ArticleListType) {
+    this.articleList = articles
+  }
+
   @Action
   public changeDrawerState() {
     this.context.commit('changeDrawer');
+  }
+
+  @Action({ rawError: true })
+  public getArticles() {
+    return ArticleService.getList()
+      .then((response) => {
+        let articles = response.data as Array<{ [key: string]: any }>
+        articles = articles.map((article, i) => {
+          return {
+            ...article,
+            path: '/article/' + article.id,
+            src: article.src || `https://picsum.photos/300/400?image=${ i + 1 }`,
+          }
+        })
+
+        this.context.commit('setArticleList', articles)
+        return Promise.resolve(articles);
+      })
   }
 
   get isOpenDrawer() {

@@ -36,7 +36,7 @@
 
       <v-btn text>
         <v-icon>{{ icons.mdiEye }}</v-icon>
-        <span class="ml-2"> 123</span>
+        <span class="ml-2">{{ article.views }}</span>
       </v-btn>
     </v-card-actions>
   </v-card>

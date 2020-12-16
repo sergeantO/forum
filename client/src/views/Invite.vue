@@ -71,6 +71,9 @@ const Auth = namespace('User');
 
 @Component
 export default class Invite extends Vue {
+  public $route: any
+  public $router: any
+
   private user: any = {
     username: '',
     password: '',
