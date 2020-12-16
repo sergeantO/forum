@@ -5,6 +5,7 @@ const InitiateMongoServer = require("./config/db");
 
 const user = require("./routes/user");
 const articles = require("./routes/articles");
+const upload = require("./routes/upload");
 
 // Initiate Mongo Server
 InitiateMongoServer();
@@ -13,13 +14,16 @@ const app = express();
 
 app.use(cors())
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
 app.get("/", (req, res) => {
   res.json({ message: "API Working" });
 });
 
+app.use('/images', express.static(__dirname + '/images'));
 
 app.use("/user", user);
+app.use("/upload", upload);
 app.use(articles);
 
 // Erorrs
