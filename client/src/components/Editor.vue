@@ -13,23 +13,32 @@ import { OutputData } from '@editorjs/editorjs/types/data-formats'
 
 @Component
 export default class Editor extends Vue {
-  @Prop({ default: false }) private readonly readMode!: boolean
+  @Prop() private readonly readMode!: boolean
 
-  @Prop({ default: { blocks: [] } }) private readonly initData!: OutputData
+  @Prop() private readonly initData!: OutputData
 
   private editor!: EditorJS
 
   public mounted() {
-    this.editor = new EditorJS({
+    const config: { [key: string]: any } = {
       holder: 'editorjs',
-      placeholder: (this.readMode) ? '' : 'Let`s write an awesome story!',
-      readOnly: this.readMode,
       tools: {
         header: Header,
         list: List,
       },
-      data: this.initData,
-    })
+    }
+
+    if (this.initData) {
+      config.data = this.initData
+    }
+
+    if (this.readMode) {
+      config.readOnly = this.readMode
+    } else {
+      config.placeholder = 'Let`s write an awesome story!'
+    }
+
+    this.editor = new EditorJS(config)
   }
 
   public async save(): Promise<OutputData> {
