@@ -134,6 +134,7 @@ export default class Article extends Vue {
       articleId: this.id,
       top: (top > 0) ? top : 0,
       hash: '',
+      articleName: this.title,
     }
     this.noteData = noteData
     this.hideBtn()

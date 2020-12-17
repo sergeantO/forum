@@ -60,6 +60,7 @@ import {
   mdiAccountMultiplePlusOutline,
   mdiCogOutline,
   mdiTextBoxMultipleOutline,
+  mdiNotePlusOutline
 } from '@mdi/js'
 
 @Component({
@@ -74,10 +75,12 @@ export default class Menu extends Vue {
     newInvite: mdiAccountMultiplePlusOutline,
     myTeams: mdiAccountGroupOutline,
     settings: mdiCogOutline,
+    notes: mdiNotePlusOutline
   }
 
   private items = [
     { title: 'Мои статьи', icon: this.icons.myArticles, to: '/new-article' },
+    { title: 'Мои заметки', icon: this.icons.notes, to: '/notes' },
     { title: 'Мои команды', icon: this.icons.myTeams, to: '' },
     { title: 'Пригласить', icon: this.icons.newInvite, to: '' },
     { title: 'Настройки', icon: this.icons.settings, to: '' },

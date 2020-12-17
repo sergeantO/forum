@@ -17,7 +17,7 @@
     <v-card-actions>
       <v-checkbox v-model="save" label="Сохранить"></v-checkbox>
       <v-spacer></v-spacer>
-      <v-checkbox v-model="publish" label="Опубликовать"></v-checkbox>
+      <v-checkbox v-model="publish" label="Опубликовать" :disabled="!comment"></v-checkbox>
     </v-card-actions>
     <v-card-actions>
       <v-btn 
@@ -41,7 +41,7 @@ import NoteService from '../services/NoteService'
 
 @Component
 export default class NewNote extends Vue {
-  @Prop() private readonly noteData!: { text: string; articleId: string; top: number; hash?: string }
+  @Prop() private readonly noteData!: { text: string; articleId: string; articleName: string; top: number; hash?: string }
 
   @App.Mutation
   private errorPush!: (errors: string[]) => void
@@ -69,6 +69,7 @@ export default class NewNote extends Vue {
       hash: this.noteData.hash,
       save: this.save,
       publish: this.publish,
+      articleName: this.noteData.articleName
     }).then((resporse) => {
       this.closeSelf()
     }).catch((err) => {

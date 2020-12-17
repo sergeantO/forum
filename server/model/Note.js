@@ -22,6 +22,10 @@ const NoteSchema = mongoose.Schema({
     ref: 'User',
     required: true
   },
+  articleName: {
+    type: String,
+    required: true
+  },
   articleId: {
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'Article',
@@ -40,6 +44,7 @@ const NoteSchema = mongoose.Schema({
 const noteValidationRules = () => {
   return [
     body('articleId', "Please enter a valid article").not().isEmpty().isString(),
+    body('articleName', "Please enter a valid article name").not().isEmpty().isString(),
     body('text', "Please enter a valid tags").not().isEmpty().isString(),
     body('save', "Please enter a valid save").not().isEmpty().isBoolean(),
     body('publish', "Please enter a valid publish").not().isEmpty().isBoolean(),

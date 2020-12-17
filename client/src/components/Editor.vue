@@ -26,6 +26,7 @@ export default class Editor extends Vue {
         header: Header,
         list: List,
       },
+      minHeight: 20
     }
 
     if (this.initData) {
