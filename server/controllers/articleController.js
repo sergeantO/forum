@@ -34,7 +34,7 @@ let getList = async (req, res) => {
       id: article.id,
       src: article.src,
       title: article.title,
-      subtitle: article.blocks.find((block) => block.type === 'paragraph').data.text,
+      subtitle: article.blocks.find((block) => block.type === 'paragraph').data.text.split(' ').slice(0, 100).join(' ')+'...',
       tags: article.tags,
       views: article.views,
       image: article.image
@@ -47,7 +47,6 @@ let getList = async (req, res) => {
 let getOne = async (req, res) => {
   const articleID = req.params.id
   let article = await Article.findById(articleID).exec()
-  console.log(article)
   let { blocks, version, time, title, image } = article
   res.status(200).json({ blocks, version, time, title, image });
 }

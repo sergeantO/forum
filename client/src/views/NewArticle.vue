@@ -12,7 +12,16 @@
     ></v-combobox>
     <UploadImage @uploaded='setFileName' />
     <Editor ref="editor"/>
-    <v-btn @click="save" color="primary">Save</v-btn>
+    <v-row justify="center" align="center"> 
+      <v-col cols='2'>
+        <v-btn block @click="save" color="primary">Сохранить</v-btn>
+      </v-col>
+      <v-col>
+        <v-checkbox v-model="checkbox" label="Опубликовать"></v-checkbox>
+      </v-col>
+    </v-row>
+    
+    
   </v-container>
 </template>
 
@@ -38,6 +47,8 @@ export default class NewArticle extends Vue {
   private title = ''
   private imageFileName = ''
   private tags: string[] = []
+
+  private checkbox = false
 
   @Ref()
   private readonly editor!: Editor

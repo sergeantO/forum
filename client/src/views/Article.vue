@@ -18,6 +18,13 @@
       <v-col cols='6' offset="2"  @mousedown='getPoint' @mouseup='mouseup'>
         <Editor v-if="editorData" :readMode="true" :initData="editorData" />
       </v-col>
+      <v-col cols='3'>
+        <NewNote 
+          v-if="noteData" 
+          :noteData='noteData' 
+          @closeME="noteData = null" 
+        />
+      </v-col>
     </v-row>
     <div class="tools" ref='tool'>
       <v-btn @click='add'>+</v-btn>
@@ -32,10 +39,10 @@ import { Component, Ref, Vue } from 'vue-property-decorator';
 
 import Editor from '../components/Editor.vue'
 import ArticleService from '../services/ArticleService';
-
+import NewNote from '../components/NewNote.vue';
 
 @Component({
-  components: { Editor },
+  components: { Editor, NewNote },
 })
 export default class Article extends Vue {
   public $route: any; // bugfix
@@ -47,6 +54,7 @@ export default class Article extends Vue {
   private title: string = ''
   private image: string = 'https://cdn.pixabay.com/photo/2020/07/12/07/47/bee-5396362_1280.jpg'
   private tracker = { x: 0, y: 0 }
+  private noteData: any = ''
 
   private created() {
     ArticleService.getOne(this.id)
@@ -57,22 +65,23 @@ export default class Article extends Vue {
     })
   }
 
-  private getPoint(e) {
+
+  private getPoint(e: MouseEvent) {
     this.tracker.x = e.pageX
     this.tracker.y = e.pageY
   }
 
-  private mouseup(e) {
-      let selectedText = this.getSelected()
+  private mouseup(e: MouseEvent) {
+      const selectedText = this.getSelected()
 
       if (e.pageY <= this.tracker.y) {
         this.tracker.y = e.pageY
         this.tracker.x = e.pageX
       }
 
-      if(selectedText){
-        let left = this.tracker.x + 5
-        let top = this.tracker.y - 160
+      if (selectedText) {
+        const left = this.tracker.x + 5
+        const top = this.tracker.y - 160
         this.showBtn(left, top)
       } else {
         this.hideBtn()
@@ -80,18 +89,18 @@ export default class Article extends Vue {
   }
 
   private showBtn(left: number, top: number) {
-    if (!this.tool) return
+    if (!this.tool) { return }
 
-    let style = this.tool.style
+    const style = this.tool.style
     style.display = 'block'
     style.top = top + 'px'
     style.left = left + 'px'
   }
 
   private hideBtn() {
-    if (!this.tool) return
+    if (!this.tool) { return }
 
-    let style = this.tool.style
+    const style = this.tool.style
     style.display = 'none'
   }
 
@@ -106,7 +115,14 @@ export default class Article extends Vue {
   }
 
   private add() {
-    console.log( this.getSelected() )
+    const top = Number.parseInt(this.tool.style.top, 10) - 700
+    const noteData = {
+      text: this.getSelected(),
+      link: `http://localhost:8080/article/${this.id}`,
+      top: (top > 0) ? top : 0,
+    }
+    this.noteData = noteData
+    this.hideBtn()
   }
 
   private get id() {
