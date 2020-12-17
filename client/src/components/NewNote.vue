@@ -41,7 +41,13 @@ import NoteService from '../services/NoteService'
 
 @Component
 export default class NewNote extends Vue {
-  @Prop() private readonly noteData!: { text: string; articleId: string; articleName: string; top: number; hash?: string }
+  @Prop() private readonly noteData!: {
+    text: string;
+    articleId: string;
+    articleName: string;
+    top: number;
+    hash?: string;
+  }
 
   @App.Mutation
   private errorPush!: (errors: string[]) => void
@@ -69,7 +75,7 @@ export default class NewNote extends Vue {
       hash: this.noteData.hash,
       save: this.save,
       publish: this.publish,
-      articleName: this.noteData.articleName
+      articleName: this.noteData.articleName,
     }).then((resporse) => {
       this.closeSelf()
     }).catch((err) => {

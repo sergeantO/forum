@@ -14,7 +14,6 @@ type ArticleListType = Array<{
 
 @Module({ namespaced: true })
 class App extends VuexModule {
-  public drawer = false
   public articleList: ArticleListType = []
   public tags: string[] = []
   public errors: string[] = []
@@ -32,21 +31,6 @@ class App extends VuexModule {
   }
 
   @Mutation
-  public changeDrawer() {
-    this.drawer = !this.drawer
-  }
-
-  @Mutation
-  public closeDrawer() {
-    this.drawer = false
-  }
-
-  @Mutation
-  public openDrawer() {
-    this.drawer = true
-  }
-
-  @Mutation
   public setArticleList(articles: ArticleListType) {
     this.articleList = articles
   }
@@ -54,11 +38,6 @@ class App extends VuexModule {
   @Mutation
   public setTags(tags: string[]) {
     this.tags = tags
-  }
-
-  @Action
-  public changeDrawerState() {
-    this.context.commit('changeDrawer');
   }
 
   @Action({ rawError: true })
@@ -80,10 +59,6 @@ class App extends VuexModule {
 
   get error() {
     return this.errors[0]
-  }
-
-  get isOpenDrawer() {
-    return this.drawer
   }
 
   get articles() {

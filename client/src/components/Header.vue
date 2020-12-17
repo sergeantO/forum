@@ -79,7 +79,8 @@ export default class Header extends Vue {
   @Auth.State('user')
   private currentUser!: any;
 
-  @App.Action
-  private changeDrawerState!: () => void;
+  private changeDrawerState() {
+    this.$emit('clicked')
+  }
 }
 </script>

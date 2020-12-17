@@ -1,7 +1,7 @@
 <template>
   <v-app>
-    <Menu></Menu>
-    <Header></Header>
+    <Menu :drawer='drawer' @update:drawer='updateDrawer'></Menu>
+    <Header @clicked='clicked'></Header>
     <v-main>
       <router-view></router-view>
     </v-main>
@@ -34,11 +34,20 @@ export default class App extends Vue {
   @AppState.Mutation
   private readingError!: () => void
 
+  private drawer = false
+
   private onClosedNotification() {
     setTimeout(this.readingError, 500)
   }
 
-  // @AppState.Mutation
-  // private errorPush!: (errors: string[]) => void
+  private clicked() {
+    this.drawer = !this.drawer
+  }
+
+  private updateDrawer(val: boolean) {
+    if (val === false) {
+      this.drawer = false
+    }
+  }
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
    <v-navigation-drawer 
     app
-    v-model="drawer"
+    v-model="isOpenDrawer"
     light
     right
     clipped
@@ -47,7 +47,7 @@
 
 
 <script lang='ts'>
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, PropSync, Vue } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
 const Auth = namespace('User');
 const App = namespace('App');
@@ -60,7 +60,7 @@ import {
   mdiAccountMultiplePlusOutline,
   mdiCogOutline,
   mdiTextBoxMultipleOutline,
-  mdiNotePlusOutline
+  mdiNotePlusOutline,
 } from '@mdi/js'
 
 @Component({
@@ -69,13 +69,16 @@ import {
 export default class Menu extends Vue {
   public $router: any; // bugfix
 
+  @PropSync('drawer', { type: Boolean })
+  private isOpenDrawer!: boolean
+
   private icons = {
     mdiLogout,
     myArticles: mdiTextBoxMultipleOutline,
     newInvite: mdiAccountMultiplePlusOutline,
     myTeams: mdiAccountGroupOutline,
     settings: mdiCogOutline,
-    notes: mdiNotePlusOutline
+    notes: mdiNotePlusOutline,
   }
 
   private items = [
@@ -86,27 +89,13 @@ export default class Menu extends Vue {
     { title: 'Настройки', icon: this.icons.settings, to: '' },
   ]
 
-  @App.Getter
-  private isOpenDrawer!: boolean;
-
-  private get drawer(): boolean {
-    return this.isOpenDrawer
-  }
-
-  private set drawer(value: boolean) {
-    return
-  }
-
   @Auth.Action
-  private signOut!: () => void;
-
-  @App.Mutation
-  private closeDrawer!: () => void
+  private signOut!: () => void
 
   private logOut() {
-    this.closeDrawer()
-    this.signOut();
-    this.$router.push('/login');
+    this.$emit('update:drawer', false)
+    this.signOut()
+    this.$router.push('/login')
   }
 
 }
