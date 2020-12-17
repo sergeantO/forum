@@ -23,7 +23,6 @@ class App extends VuexModule {
   @Mutation
   public errorPush(errors: string[]) {
     this.errors = [...this.errors, ...errors]
-    console.log(errors)
   }
 
   @Mutation

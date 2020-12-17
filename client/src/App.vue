@@ -34,7 +34,7 @@ export default class App extends Vue {
   @AppState.Mutation
   private readingError!: () => void
 
-  onClosedNotification() {
+  private onClosedNotification() {
     setTimeout(this.readingError, 500)
   }
 

@@ -24,7 +24,12 @@ const getByUserId = async (req, res) => {
 }
 
 const getByArticleId = async (req, res) => {
-  const articleId = req.params.id
+  const articleId = req.params.artilceId
+  let notes = await Note.find({ articleId, publish: true }).exec()
+  notes = notes.map((note) => { 
+    return { id: note.id, text: note.text, comment: note.comment }
+  })
+  res.status(200).json(notes)
 }
 
 module.exports = {

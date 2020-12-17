@@ -29,16 +29,7 @@
     <v-row>
       <v-col cols='8' offset="2">
         <v-divider></v-divider>
-        <v-expansion-panels flat>
-        <v-expansion-panel>
-          <v-expansion-panel-header>
-            Коментарии
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-        </v-expansion-panels>
+        <Comments />
       </v-col>
     </v-row>
     <div class="tools" ref='tool'>
@@ -57,9 +48,11 @@ import { mdiNotePlusOutline } from '@mdi/js';
 import Editor from '../components/Editor.vue'
 import ArticleService from '../services/ArticleService';
 import NewNote from '../components/NewNote.vue';
+import NoteService from '../services/NoteService';
+import Comments from '../components/Comments.vue';
 
 @Component({
-  components: { Editor, NewNote },
+  components: { Editor, NewNote, Comments },
 })
 export default class Article extends Vue {
   public $route: any; // bugfix
@@ -85,7 +78,6 @@ export default class Article extends Vue {
       this.image = data.image || 'https://cdn.pixabay.com/photo/2020/07/12/07/47/bee-5396362_1280.jpg'
     })
   }
-
 
   private getPoint(e: MouseEvent) {
     this.tracker.x = e.pageX
