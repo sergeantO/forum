@@ -6,6 +6,7 @@ const InitiateMongoServer = require("./config/db");
 const user = require("./routes/user");
 const articles = require("./routes/articles");
 const upload = require("./routes/upload");
+const notes = require("./routes/notes");
 
 // Initiate Mongo Server
 InitiateMongoServer();
@@ -24,6 +25,7 @@ app.use('/images', express.static(__dirname + '/images'));
 
 app.use("/user", user);
 app.use("/upload", upload);
+app.use("/notes", notes);
 app.use(articles);
 
 // Erorrs

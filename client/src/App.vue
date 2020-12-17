@@ -31,12 +31,12 @@ import Notification from './components/Notification.vue';
   },
 })
 export default class App extends Vue {
+  @AppState.Mutation
+  private readingError!: () => void
+
   onClosedNotification() {
     setTimeout(this.readingError, 500)
   }
-
-  @AppState.Mutation
-  private readingError!: () => void
 
   // @AppState.Mutation
   // private errorPush!: (errors: string[]) => void

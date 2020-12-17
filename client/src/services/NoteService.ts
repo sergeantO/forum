@@ -9,12 +9,27 @@ class NoteService {
   }
 
   public getMyNotes() {
-    return axios.get(API_URL, { headers: authHeader() })
+    return axios.get(API_URL + 'my', { headers: authHeader() })
   }
 
   // todo: типизировать данные
-  public create(data: any) {
-    return axios.post(API_URL, data, { headers: authHeader() });
+  public create(data: {
+    text: string, comment?: string,
+    hash?: string, articleId: string,
+    save: boolean, publish: boolean,
+  }) {
+    return axios.post(API_URL, data, { headers: authHeader() })
+      .then((response) => {
+        return Promise.resolve(response.data);
+      })
+      .catch((error) => {
+        if (error.response) {
+          const data = error.response.data
+          const status = error.response.status
+          const headers = error.response.headers
+          return Promise.reject({ data, status, headers })
+        }
+      })
   }
 }
 

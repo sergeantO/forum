@@ -17,6 +17,20 @@ class App extends VuexModule {
   public drawer = false
   public articleList: ArticleListType = []
   public tags: string[] = []
+  public errors: string[] = []
+  public messages: string[] = []
+
+  @Mutation
+  public errorPush(errors: string[]) {
+    this.errors = [...this.errors, ...errors]
+    console.log(errors)
+  }
+
+  @Mutation
+  public readingError() {
+    const [e, ...errs] = this.errors
+    this.errors = errs
+  }
 
   @Mutation
   public changeDrawer() {
@@ -63,6 +77,10 @@ class App extends VuexModule {
         this.context.commit('setArticleList', articles)
         return Promise.resolve(articles);
       })
+  }
+
+  get error() {
+    return this.errors[0]
   }
 
   get isOpenDrawer() {
