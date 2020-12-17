@@ -37,6 +37,10 @@ const ArticleSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'User',
     required: true
+  },
+  publish: {
+    type: Boolean,
+    default: false
   }
 });
 

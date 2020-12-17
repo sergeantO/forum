@@ -17,7 +17,7 @@
         <v-btn block @click="save" color="primary">Сохранить</v-btn>
       </v-col>
       <v-col>
-        <v-checkbox v-model="checkbox" label="Опубликовать"></v-checkbox>
+        <v-checkbox v-model="publish" label="Опубликовать"></v-checkbox>
       </v-col>
     </v-row>
     
@@ -48,7 +48,7 @@ export default class NewArticle extends Vue {
   private imageFileName = ''
   private tags: string[] = []
 
-  private checkbox = false
+  private publish = false
 
   @Ref()
   private readonly editor!: Editor
@@ -65,6 +65,7 @@ export default class NewArticle extends Vue {
           title: this.title,
           image: this.imageFileName,
           tags: this.tags,
+          publish: this.publish,
         }
         ArticleService.create(data).then((response) => {
           if (response.status === 201) {

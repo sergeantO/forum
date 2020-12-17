@@ -1,13 +1,13 @@
 const { Article } = require("../model/Article");
 
 let create = async (req, res) => {
-  const {time, blocks, version, title, tags, image } = req.body
+  const {time, blocks, version, title, tags, image, publish } = req.body
   const author = req.user.id
   
   let article
   try {
     article = new Article({
-      time, blocks, version, title, tags, author, image
+      time, blocks, version, title, tags, author, image, publish
     })
   
     await article.save()
@@ -24,9 +24,9 @@ let getList = async (req, res) => {
   const { tags, userID } = req.body
   let articles
   if (!tags && !userID) {
-    articles = await Article.find()
+    articles = await Article.find({ publish: true }).exec()
   } else {
-    articles = await Article.find({ author:userID })
+    articles = await Article.find({ author: userID, publish: true }).exec()
   }
 
   articles = articles.map(article => {
