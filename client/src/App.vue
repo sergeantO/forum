@@ -7,25 +7,38 @@
     </v-main>
 
     <Footer></Footer>
+
+    <Notification @closed='onClosedNotification' />
   </v-app>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { Component, Prop, Ref, Vue, Watch } from 'vue-property-decorator';
+import { namespace } from 'vuex-class';
+const AppState = namespace('App');
+
 import Header from './components/Header.vue';
 import Menu from './components/Menu.vue';
 import Footer from './components/Footer.vue';
+import Notification from './components/Notification.vue';
 
-export default Vue.extend({
-  name: 'App',
-
+@Component({
   components: {
     Header,
     Menu,
     Footer,
+    Notification,
   },
+})
+export default class App extends Vue {
+  onClosedNotification() {
+    setTimeout(this.readingError, 500)
+  }
 
-  data: () => ({
-  }),
-});
+  @AppState.Mutation
+  private readingError!: () => void
+
+  // @AppState.Mutation
+  // private errorPush!: (errors: string[]) => void
+}
 </script>
