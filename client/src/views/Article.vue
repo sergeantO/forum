@@ -26,8 +26,23 @@
         />
       </v-col>
     </v-row>
+    <v-row>
+      <v-col cols='8' offset="2">
+        <v-divider></v-divider>
+        <v-expansion-panels flat>
+        <v-expansion-panel>
+          <v-expansion-panel-header>
+            Коментарии
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+        </v-expansion-panels>
+      </v-col>
+    </v-row>
     <div class="tools" ref='tool'>
-      <v-btn @click='add'>+</v-btn>
+      <v-btn fab small dark color='primary' @click='add'><v-icon>{{ icons.plus }}</v-icon></v-btn>
     </div>
   </v-container>
 </template>
@@ -36,6 +51,8 @@
 import { Component, Ref, Vue } from 'vue-property-decorator';
 // import { namespace } from 'vuex-class';
 // const App = namespace('App');
+
+import { mdiNotePlusOutline } from '@mdi/js';
 
 import Editor from '../components/Editor.vue'
 import ArticleService from '../services/ArticleService';
@@ -49,6 +66,10 @@ export default class Article extends Vue {
 
   @Ref()
   private readonly tool!: HTMLElement
+
+  private icons = {
+    plus: mdiNotePlusOutline,
+  }
 
   private editorData: object | null = null
   private title: string = ''
@@ -118,8 +139,9 @@ export default class Article extends Vue {
     const top = Number.parseInt(this.tool.style.top, 10) - 700
     const noteData = {
       text: this.getSelected(),
-      link: `http://localhost:8080/article/${this.id}`,
+      articleId: this.id,
       top: (top > 0) ? top : 0,
+      hash: '',
     }
     this.noteData = noteData
     this.hideBtn()
@@ -136,7 +158,6 @@ export default class Article extends Vue {
 .tools {
   display: none;
   position: absolute;
-  background: #777;
   z-index: 1;
 }
 
