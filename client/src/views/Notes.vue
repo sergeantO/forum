@@ -1,11 +1,10 @@
 <template>
-  <v-container fluid class="d-flex flex-wrap align-content-start justify-space-around">
+  <v-container fluid class="d-flex flex-wrap align-content-start justify-space-between">
     <v-card
       v-for="note in notes"
       :key="note.id"
       class="ma-2"
-      style="flex: 1 1 auto;"
-      max-width=480
+      style="flex: 2 3 450px;"
     >
       <v-card-title> {{ note.comment }} </v-card-title>
       <v-card-text><p class="quote"> {{ note.text }} </p></v-card-text>

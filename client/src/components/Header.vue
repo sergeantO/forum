@@ -1,33 +1,25 @@
 <template>
   <v-app-bar
     app
-    color="primary"
-    elevation=1
-    dark
-    min-height=100
-    height=100
+    color="#fff"
+    elevation=2
+    min-height=80
+    height=80
     clipped-right
   >
     <!-- LOGO -->
-    <router-link to='/'>
+    <router-link to='/' style='text-decoration: none'>
       <div class="d-flex align-center">
         <v-img
           alt="Vuetify Logo"
-          class="shrink mr-2"
+          class="shrink mr-5"
           contain
           src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
           transition="scale-transition"
           width="40"
         />
 
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
+        <h1>LOGO</h1>
       </div>
     </router-link>
     <!-- END LOGO -->
@@ -48,6 +40,7 @@
     <v-app-bar-nav-icon 
       v-if="isLoggedIn" 
       @click.stop="changeDrawerState"
+      color="primary"
     ></v-app-bar-nav-icon>
     
   </v-app-bar>

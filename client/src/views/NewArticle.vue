@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container mt-10>
     <v-text-field label="Название статьи" v-model="title"></v-text-field>
     <v-combobox
       v-model="tags"

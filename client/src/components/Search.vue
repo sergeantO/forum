@@ -10,7 +10,8 @@
         multiple
         small-chips
         dense
-        solo
+        outlined
+        color="primary"
         light
         hide-details
         class='mr-3'
@@ -22,6 +23,7 @@
       fab
       small
       @click="isOpenSearch = !isOpenSearch"
+      color="primary"
     >
       <v-icon>{{ icons.search }}</v-icon>
     </v-btn>
