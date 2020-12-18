@@ -27,7 +27,7 @@ const getByUserId = async (req, res) => {
       text: note.text, 
       comment: note.comment,
       articleName: note.articleName,
-      link: `http://localhost:8080/article/${ note.articleId }/#${ note.hash }`
+      link: `http://localhost:8080/article/${ note.articleId }#${ note.hash }`
     }
   })
   res.status(200).json(notes)

@@ -73,8 +73,8 @@ const router = new VueRouter({
     if (to.hash) {
       return new Promise( (resolve, reject) => {
         setTimeout(() => {
-          resolve({ selector: to.hash })
-        }, 1000);
+          resolve({ selector: to.hash, behavior: 'smooth', offset: { y: 120, x: 0 }  })
+        }, 300);
       })
     }
   },
