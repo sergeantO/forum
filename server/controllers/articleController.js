@@ -1,8 +1,20 @@
 const { Article } = require("../model/Article");
 
 let create = async (req, res) => {
-  const {time, blocks, version, title, tags, image, publish } = req.body
+  const {time, version, title, tags, image, publish } = req.body
+  let { blocks } = req.body
   const author = req.user.id
+
+  if (publish) {
+    blocks = blocks.map(block => { 
+      return {
+        ...block, 
+        id: Math.random().toString(36).substring(2,9)
+      }
+    })
+  }
+
+  console.log(blocks)
   
   let article
   try {

@@ -4,7 +4,7 @@
       offset="2"  
       @mousedown='getPoint' 
       @mouseup='mouseup'>
-    <div v-html="rawHtml"></div>
+    <div id="article" v-html="rawHtml"></div>
     <div class="tools" ref='tool'>
       <v-btn fab small dark color='primary' @click='add'><v-icon>{{ icons.plus }}</v-icon></v-btn>
     </div>
@@ -46,7 +46,7 @@ export default class Article extends Vue {
   }
 
   private mouseup(e: MouseEvent) {
-    const selectedText = this.getSelected()
+    const selectedText = this.getSelected().text
 
     if (e.pageY <= this.pointer.y) {
       this.pointer.y = e.pageY
@@ -78,22 +78,42 @@ export default class Article extends Vue {
     style.display = 'none'
   }
 
-  private getSelected(): string {
-    let t = null
+  private getSelected(): { text: string, hash: string } {
+    let selection: Selection | null = null
     if (window.getSelection) {
-      t = window.getSelection()
+      selection = window.getSelection()
     } else if (document.getSelection) {
-      t = document.getSelection()
+      selection = document.getSelection()
     }
-    return t!.toString()
+
+    if (selection === null) {
+      return { text: '', hash: '' }
+    }
+    if (selection.anchorNode === null) {
+      return { text: '', hash: '' }
+    }
+
+    let elem = selection.anchorNode as Element
+    while (elem.id === undefined || elem.id === '') {
+      elem = elem.parentElement as Element
+    }
+    const id = (elem.id !== 'article') ? elem.id : ''
+    const selected = {
+      text: selection.toString(),
+      hash: id,
+    }
+
+    return selected
   }
 
+
   private add() {
-    const top = Number.parseInt(this.tool.style.top, 10) - 80
+    const top = Number.parseInt(this.tool.style.top, 10) - 90
+    const selected = this.getSelected()
     const noteData = {
-      text: this.getSelected(),
+      text: selected.text,
+      hash: selected.hash,
       top: (top > 0) ? top : 0,
-      hash: '',
     }
 
     this.hideBtn()

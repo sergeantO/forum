@@ -1,6 +1,6 @@
-import { OutputData, OutputBlockData } from '@editorjs/editorjs'
+import { OutputBlockData } from '@editorjs/editorjs'
 
-type transforms = {
+interface Itransforms {
   [key: string]: any;
   delimiter(): string;
   header(block: OutputBlockData): string;
@@ -10,48 +10,60 @@ type transforms = {
   quote(block: OutputBlockData): string;
 };
 
+interface IData extends OutputBlockData {
+  id: string
+}
+
+interface OutputData {
+  version?: string;
+  time?: number;
+  blocks: IData[];
+}
+
 
 class Render {
-  public parser ({ blocks }: OutputData) {
-    return blocks.map((block) => {
-      return this.transforms[block.type] ? 
-        this.transforms[block.type](block)
-        :  new Error(`The Parser function of type "${block.type}" is not defined.`)
-    });
-  }
-
-  private transforms: transforms = {
+  private transforms: Itransforms = {
     delimiter: () => {
-      return `<br/>`;
+      return `<br/>`
     },
-  
-    header: ({ data }) => {
-      return `<h${data.level}> ${data.text} </h${data.level}>`;
+
+    header: ({ data, id = '' }: IData) => {
+      return `<h${data.level} id=${id}> ${data.text} </h${data.level}>`
     },
-  
-    paragraph: ({ data }) => {
-      return `<p> ${data.text} </p>`;
+
+    paragraph: ({ data, id = '' }: IData) => {
+      return `<p id=${id}> ${data.text} </p>`
     },
-  
-    list: ({ data }) => {
-      let style = data.style === "unordered" ? "ul" : "ol";
-      let list = "";
+
+    list: ({ data, id = '' }: IData) => {
+      const style = data.style === 'unordered' ? 'ul' : 'ol'
+      let list = '';
+
       if (data.items) {
         list = (data.items as string[])
           .map((i) => `<li> ${i} </li>`)
-          .reduce((a, c) => a + c, "");
+          .reduce((a, c) => a + c, '');
       }
-      return `<${style}> ${list} </${style}>`;
+
+      return `<${style} id=${id}> ${list} </${style}>`
     },
-  
-    image: ({ data }) => {
-      let caption = data.caption ? data.caption : "Image";
-      return `<img src="${data.file ? data.file.url : ""}" alt="${caption}" />`;
+
+    image: ({ data, id = '' }: IData) => {
+      const caption = data.caption ? data.caption : 'Image'
+      return `<img id=${id} src='${data.file ? data.file.url : ''}' alt='${caption}' />`
     },
-  
-    quote: ({ data }) => {
-      return `<blockquote> ${data.text} </blockquote> - ${data.caption}`;
+
+    quote: ({ data, id = '' }: IData) => {
+      return `<blockquote id=${id}> ${data.text} </blockquote> - ${data.caption}`
     },
+  }
+
+  public parser({ blocks }: OutputData) {
+    return blocks.map((block) => {
+      return this.transforms[block.type] ?
+        this.transforms[block.type](block)
+        :  new Error(`The Parser function of type "${block.type}" is not defined.`)
+    });
   }
 }
 
