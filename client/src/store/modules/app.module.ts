@@ -37,7 +37,7 @@ class App extends VuexModule {
 
   @Mutation
   public setTags(tags: string[]) {
-    this.tags = tags
+    this.tags = tags.map((tag) => tag.toLowerCase())
   }
 
   @Action({ rawError: true })

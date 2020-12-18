@@ -14,7 +14,7 @@
       <a class="mr-3"
         v-for="(tag, index) in article.tags"
         :key="index"
-        
+        @click="searchByTag(tag)"
       >#{{ tag }}</a>
     </v-card-subtitle>
     
@@ -47,15 +47,22 @@ import { mdiEye } from '@mdi/js';
 
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
-const Auth = namespace('User');
+const App = namespace('App');
 
 @Component
 export default class ArticlePrewiev extends Vue {
   @Prop()
   public article!: object
 
+  @App.Mutation
+  private setTags!: (tags: string[]) => void
+
   private icons = {
     mdiEye,
+  }
+
+  private searchByTag(tag: string) {
+    this.setTags([tag])
   }
 
 };

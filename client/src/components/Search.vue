@@ -42,6 +42,9 @@ export default class Search extends Vue {
   @App.Mutation
   private setTags!: (tags: string[]) => void
 
+  @App.State('tags')
+  private tags!: string[]
+
   private icons = {
     search: mdiMagnify,
   }
@@ -59,7 +62,17 @@ export default class Search extends Vue {
 
   @Watch('select')
   private onChildChanged(val: string[], oldVal: string[]) {
-    this.setTags(val)
+    if (this.tags !== val) {
+      this.setTags(val)
+    }
+  }
+
+  @Watch('tags')
+  private onTagsChanged(val: string[], oldVal: string[]) {
+    if (this.select !== val) {
+      this.select = val
+      this.isOpenSearch = true
+    }
   }
 
 }
