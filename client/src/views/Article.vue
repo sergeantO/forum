@@ -12,12 +12,13 @@
         height="550px"
         gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.9)"
       />
+      <v-col v-else cols='8' offset="2">
+        <v-divider></v-divider>
+      </v-col>
     </v-row>
     
     <v-row>
-      <v-col cols='6' offset="2"  @mousedown='getPoint' @mouseup='mouseup'>
-        <Editor v-if="editorData" :readMode="true" :initData="editorData" />
-      </v-col>
+      <RenderArticle :rawHtml="rawHtml" @newNote="onNewNote" />
       <v-col cols='3'>
         <NewNote 
           v-if="noteData" 
@@ -32,9 +33,6 @@
         <Comments />
       </v-col>
     </v-row>
-    <div class="tools" ref='tool'>
-      <v-btn fab small dark color='primary' @click='add'><v-icon>{{ icons.plus }}</v-icon></v-btn>
-    </div>
   </v-container>
 </template>
 
@@ -45,14 +43,15 @@ import { Component, Ref, Vue } from 'vue-property-decorator';
 
 import { mdiNotePlusOutline } from '@mdi/js';
 
-import Editor from '../components/Editor.vue'
 import ArticleService from '../services/ArticleService';
 import NewNote from '../components/NewNote.vue';
 import NoteService from '../services/NoteService';
 import Comments from '../components/Comments.vue';
+import render from '../services/articleRender/Render'
+import RenderArticle from '../components/RenderedArticle.vue'
 
 @Component({
-  components: { Editor, NewNote, Comments },
+  components: { NewNote, Comments, RenderArticle },
 })
 export default class Article extends Vue {
   public $route: any; // bugfix
@@ -64,80 +63,27 @@ export default class Article extends Vue {
     plus: mdiNotePlusOutline,
   }
 
-  private editorData: object | null = null
   private title: string = ''
-  private image: string = 'https://cdn.pixabay.com/photo/2020/07/12/07/47/bee-5396362_1280.jpg'
+  private image: string = ''
   private tracker = { x: 0, y: 0 }
   private noteData: any = ''
+  private rawHtml: string = ''
 
   private created() {
     ArticleService.getOne(this.id)
     .then((data) => {
-      this.editorData = data.editorData
       this.title = data.title
-      this.image = data.image || 'https://cdn.pixabay.com/photo/2020/07/12/07/47/bee-5396362_1280.jpg'
+      this.image = data.image
+      this.rawHtml = render.parser(data.editorData).join('')
     })
   }
 
-  private getPoint(e: MouseEvent) {
-    this.tracker.x = e.pageX
-    this.tracker.y = e.pageY
-  }
-
-  private mouseup(e: MouseEvent) {
-      const selectedText = this.getSelected()
-
-      if (e.pageY <= this.tracker.y) {
-        this.tracker.y = e.pageY
-        this.tracker.x = e.pageX
-      }
-
-      if (selectedText) {
-        const left = this.tracker.x + 5
-        const top = this.tracker.y - 160
-        this.showBtn(left, top)
-      } else {
-        this.hideBtn()
-      }
-  }
-
-  private showBtn(left: number, top: number) {
-    if (!this.tool) { return }
-
-    const style = this.tool.style
-    style.display = 'block'
-    style.top = top + 'px'
-    style.left = left + 'px'
-  }
-
-  private hideBtn() {
-    if (!this.tool) { return }
-
-    const style = this.tool.style
-    style.display = 'none'
-  }
-
-  private getSelected(): string {
-      let t = null
-      if (window.getSelection) {
-        t = window.getSelection()
-      } else if (document.getSelection) {
-        t = document.getSelection()
-      }
-      return t!.toString()
-  }
-
-  private add() {
-    const top = Number.parseInt(this.tool.style.top, 10) - 700
-    const noteData = {
-      text: this.getSelected(),
+  private onNewNote(noteData: any) {
+    this.noteData = {
+      ...noteData,
       articleId: this.id,
-      top: (top > 0) ? top : 0,
-      hash: '',
       articleName: this.title,
     }
-    this.noteData = noteData
-    this.hideBtn()
   }
 
   private get id() {
@@ -148,10 +94,6 @@ export default class Article extends Vue {
 </script>
 
 <style scoped>
-.tools {
-  display: none;
-  position: absolute;
-  z-index: 1;
-}
+
 
 </style>
