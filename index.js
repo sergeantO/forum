@@ -12,10 +12,10 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 app.use('/images', express.static(__dirname + '/images'));
 
-app.use("/user", require("./routes/user"));
-app.use("/upload", require("./routes/upload"));
-app.use("/notes", require("./routes/notes"));
-app.use("/article", require("./routes/articles"));
+app.use("/api/user", require("./routes/user"));
+app.use("/api/upload", require("./routes/upload"));
+app.use("/api/notes", require("./routes/notes"));
+app.use("/api/article", require("./routes/articles"));
 
 // Erorrs
 app.use((req, res, next) => {

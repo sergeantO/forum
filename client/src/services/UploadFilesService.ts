@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:4000/upload';
+const API_URL = 'http://localhost:4000/api/upload';
 
 class UploadFilesService {
   public upload( file: File, onUploadProgress: (progressEvent: any) => void ) {

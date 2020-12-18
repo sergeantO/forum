@@ -74,7 +74,7 @@ const router = new VueRouter({
       return new Promise( (resolve, reject) => {
         setTimeout(() => {
           resolve({ selector: to.hash, behavior: 'smooth', offset: { y: 120, x: 0 }  })
-        }, 300);
+        }, 1200);
       })
     }
   },

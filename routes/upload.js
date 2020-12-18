@@ -4,16 +4,13 @@ const path = require('path');
 const upload = require('../middleware/uploadMiddleware');
 const fs = require("fs");
 const { v4: uuidv4 } = require('uuid');
-
-const handleError = (err, res) => {
-  res
-    .status(500)
-    .contentType("text/plain")
-    .end("Oops! Something went wrong!" + err.message);
-};
+const send = require("../controllers/resporseController");
+const auth = require("../middleware/auth");
+const config = require("config")
 
 
 router.post('/', 
+  auth,
   upload.single("file" /* name attribute of <file> element in your form */),
   (req, res) => {
     const tempPath = req.file.path;
@@ -21,9 +18,9 @@ router.post('/',
     const targetPath = path.join(__dirname, '../' + newName);
     
     fs.rename(tempPath, targetPath, err => {
-      if (err) return handleError(err, res);
+      if (err) return send(res).ServerError("Oops! Something went wrong!", err.message)
 
-      res.status(200).json({ filename: 'http://localhost:4000/' + newName })
+      res.status(200).json({ filename: config.get('baseUrl') + newName })
     });
   } 
 );

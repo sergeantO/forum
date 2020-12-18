@@ -1,7 +1,7 @@
 import axios from 'axios';
 import authHeader from './auth-header';
 
-const API_URL = 'http://localhost:4000/article/';
+const API_URL = 'http://localhost:4000/api/article/';
 
 class ArticleService {
   public getList() {

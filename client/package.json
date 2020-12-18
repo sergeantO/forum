@@ -39,6 +39,7 @@
     "vue-cli-plugin-vuetify": "^2.0.8",
     "vue-template-compiler": "^2.6.11"
   },
+  "proxy": "http://localhost:4000",
   "browserslist": [
     "> 1%",
     "last 2 versions",

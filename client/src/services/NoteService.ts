@@ -1,7 +1,7 @@
 import axios from 'axios';
 import authHeader from './auth-header';
 
-const API_URL = 'http://localhost:4000/notes/';
+const API_URL = 'http://localhost:4000/api/notes/';
 
 class NoteService {
   public getArticleNotes(ArticleId: string) {
