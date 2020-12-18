@@ -2,6 +2,14 @@
   <v-card class='pa-2 note'>
     <v-card-title class="headline">
       Новая заметка
+      <v-spacer></v-spacer>
+      <v-btn
+        color="primary"
+        fab
+        small
+        text
+        @click="closeSelf"
+      ><v-icon>{{ icons.close }}</v-icon></v-btn>
     </v-card-title>
 
     <v-card-subtitle> <p> {{ textToRender }} </p>  </v-card-subtitle>
@@ -39,6 +47,8 @@ const App = namespace('App');
 
 import NoteService from '../services/NoteService'
 
+import { mdiClose } from '@mdi/js';
+
 @Component
 export default class NewNote extends Vue {
   @Prop() private readonly noteData!: {
@@ -47,6 +57,10 @@ export default class NewNote extends Vue {
     articleName: string;
     top: number;
     hash?: string;
+  }
+
+  private icons = {
+    close: mdiClose,
   }
 
   @App.Mutation
