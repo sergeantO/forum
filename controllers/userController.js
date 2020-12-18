@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const config = require("config")
 
 const { User } = require("../model/User");
 const { Invite } = require("../model/Invite")
@@ -18,7 +19,6 @@ let signup = async (req, res) => {
       return res.status(400).json({ msg: "Invite is incorrect"})
     }
   } catch (e) {
-    console.log(e)
     return res.status(400).json({ msg: "Invite is incorrect", e });
   }
 
@@ -39,25 +39,8 @@ let signup = async (req, res) => {
 
       await user.save();
 
-      const payload = {
-          user: {
-              id: user.id
-          }
-      };
-
-      jwt.sign(
-          payload,
-          "randomString", {
-              expiresIn: 10000
-          },
-          async (err, accessToken) => {
-              if (err) throw err;
-              await Invite.findOneAndDelete({_id: inviteID})
-              res.status(200).json({
-                  accessToken
-              });
-          }
-      );
+      await Invite.findOneAndDelete({_id: inviteID})
+      res.status(201).json({});
   } catch (err) {
       console.log(err.message);
       res.status(500).send("Error in Saving");
@@ -87,26 +70,24 @@ let login = async (req, res) => {
       }
     };
 
-    jwt.sign(
+    const accessToken = jwt.sign(
       payload,
-      "randomString",
+      config.get('jwtSecret') ,
       {
         expiresIn: 60 * 60 * 24
-      },
-      (err, accessToken) => {
-        if (err) throw err;
-        let data = {
-          accessToken,
-          id: user.id,
-          username: user.username,
-          inviter: user.inviter,
-          createdAt: user.createdAt,
-          email: user.email,
-          image: user.image
-        }
-        res.status(200).json(data);
       }
-    );
+    )
+
+    let data = {
+      accessToken,
+      id: user.id,
+      username: user.username,
+      inviter: user.inviter,
+      createdAt: user.createdAt,
+      email: user.email,
+      image: user.image
+    }
+    res.status(200).json(data);
   } catch (e) {
     console.error(e);
     res.status(500).json({

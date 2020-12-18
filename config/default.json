@@ -1,0 +1,5 @@
+{
+    "port": 4000,
+    "mongoUri": "mongodb+srv://d4k:qwerty1234@cluster0.fkv2h.mongodb.net/app?retryWrites=true&w=majority",
+    "jwtSecret": "randomString"
+}
