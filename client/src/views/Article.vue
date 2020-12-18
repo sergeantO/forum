@@ -27,6 +27,7 @@
         />
       </v-col>
     </v-row>
+    <ArticleActions />
     <v-row>
       <v-col cols='8' offset="2">
         <v-divider></v-divider>
@@ -49,9 +50,10 @@ import NoteService from '../services/NoteService';
 import Comments from '../components/Comments.vue';
 import render from '../services/articleRender/Render'
 import RenderArticle from '../components/RenderedArticle.vue'
+import ArticleActions from '../components/ArticleActions.vue';
 
 @Component({
-  components: { NewNote, Comments, RenderArticle },
+  components: { NewNote, Comments, RenderArticle, ArticleActions },
 })
 export default class Article extends Vue {
   public $route: any; // bugfix
