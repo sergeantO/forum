@@ -13,8 +13,6 @@ let create = async (req, res) => {
       }
     })
   }
-
-  console.log(blocks)
   
   let article
   try {
@@ -59,8 +57,17 @@ let getList = async (req, res) => {
 let getOne = async (req, res) => {
   const articleID = req.params.id
   let article = await Article.findById(articleID).exec()
-  let { blocks, version, time, title, image } = article
-  res.status(200).json({ blocks, version, time, title, image });
+  
+  if (article) {
+    let { blocks, version, time, title, image } = article
+    article.views++
+    await article.save()
+    
+    res.status(200).json({ blocks, version, time, title, image });
+  } else {
+    res.status(404).json('Статья не найдена');
+  }
+  
 }
 
 let update = async (req, res) => {
