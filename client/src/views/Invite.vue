@@ -115,6 +115,7 @@ export default class Invite extends Vue {
     if (this.isLoggedIn) {
       this.$router.push('/profile');
     }
+    document.title = 'Добро пожаловать'
   }
 
   private handleRegistration() {

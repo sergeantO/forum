@@ -33,6 +33,7 @@ export default class Article extends Vue {
   }
 
   private created() {
+    document.title = 'Home'
     this.getArticles()
   }
 

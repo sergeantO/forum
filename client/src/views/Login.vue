@@ -80,6 +80,7 @@ export default class Login extends Vue {
     if (this.isLoggedIn) {
       this.$router.push('/profile');
     }
+    document.title = 'Добро пожаловать'
   }
 
   private handleLogin() {

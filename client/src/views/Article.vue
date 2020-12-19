@@ -77,6 +77,7 @@ export default class Article extends Vue {
       this.title = data.title
       this.image = data.image
       this.rawHtml = render.parser(data.editorData).join('')
+      document.title = data.title
     })
   }
 

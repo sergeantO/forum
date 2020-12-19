@@ -7,9 +7,9 @@
       </v-btn-toggle>
     </v-col>
     <v-col offset="2">
-      <span>Likes: {{Likes}}</span>
-      <span>Dislike: {{Dislike}}</span>
-      <span>Views: {{Views}}</span>
+      <span>Likes: {{likes}}</span>
+      <span>Dislike: {{dislike}}</span>
+      <span>Views: {{views}}</span>
       <span>KPI: {{KPI}}</span>
     </v-col>
   </v-row>
@@ -29,12 +29,12 @@ export default class ArticleActions extends Vue {
   }
 
   private toggle = null
-  
-  private Likes = 200
-  private Dislike = 30
-  private Views = 2000
-  private get KPI () {
-    return (this.Likes-this.Dislike)/this.Views
+
+  private likes = 200
+  private dislike = 30
+  private views = 2000
+  private get KPI() {
+    return (this.likes - this.dislike) / this.views
   }
 }
 </script>

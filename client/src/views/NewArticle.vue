@@ -57,6 +57,10 @@ export default class NewArticle extends Vue {
     this.imageFileName = filename
   }
 
+  private created() {
+    document.title = 'Новая статья'
+  }
+
   private save() {
     this.editor.save()
       .then((doc) => {

@@ -25,6 +25,10 @@ export default class Notes extends Vue {
   private str = 'hello'
   private notes = []
 
+  private created() {
+    document.title = 'Мои заметки'
+  }
+
   private mounted() {
     NoteService.getMyNotes()
       .then((data) => {

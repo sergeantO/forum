@@ -66,6 +66,10 @@ export default class Profile extends Vue {
   @Auth.State('user')
   private currentUser!: any;
 
+  private created() {
+    document.title = 'Мой профиль'
+  }
+
   private mounted() {
     if (!this.isLoggedIn) {
       this.$router.push('/login');
