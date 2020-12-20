@@ -32,6 +32,11 @@ const routes: RouteConfig[] = [
     component: () => import(/* webpackChunkName: "login" */ '../views/Notes.vue'),
   },
   {
+    path: '/my-articles',
+    name: 'MyArticles',
+    component: () => import(/* webpackChunkName: "login" */ '../views/MyArticles.vue'),
+  },
+  {
     path: '/settings',
     name: 'Settings',
     // route level code-splitting

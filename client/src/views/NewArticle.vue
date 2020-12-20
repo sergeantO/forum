@@ -73,7 +73,7 @@ export default class NewArticle extends Vue {
         }
         ArticleService.create(data).then((response) => {
           if (response.status === 201) {
-            this.$router.push('/')
+            this.$router.push('/my-articles')
           }
         }).catch((err) => {
           // console.error(err) // todo вывести плашку

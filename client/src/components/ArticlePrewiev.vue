@@ -34,6 +34,16 @@
       
       <v-spacer></v-spacer>
 
+      <v-chip
+        v-if="article.publish === true"
+        class="ma-2"
+        color="primary"
+        text-color="white"
+        close
+        @click:close="unpublish"
+      >
+        Опубликованно
+      </v-chip>
       <v-btn text>
         <v-icon>{{ icons.mdiEye }}</v-icon>
         <span class="ml-2">{{ article.views }}</span>
@@ -63,6 +73,10 @@ export default class ArticlePrewiev extends Vue {
 
   private searchByTag(tag: string) {
     this.setTags([tag])
+  }
+
+  private unpublish() {
+
   }
 
 };

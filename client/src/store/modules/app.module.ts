@@ -15,6 +15,8 @@ type ArticleListType = Array<{
 @Module({ namespaced: true })
 class App extends VuexModule {
   public articleList: ArticleListType = []
+  public myArticleList: ArticleListType = []
+  
   public tags: string[] = []
   public errors: string[] = []
   public messages: string[] = []
@@ -33,6 +35,11 @@ class App extends VuexModule {
   @Mutation
   public setArticleList(articles: ArticleListType) {
     this.articleList = articles
+  }
+
+  @Mutation
+  public setMyArticles(articles: ArticleListType) {
+    this.myArticleList = articles
   }
 
   @Mutation
@@ -57,6 +64,23 @@ class App extends VuexModule {
       })
   }
 
+  @Action({ rawError: true })
+  public getMyArticles() {
+    return ArticleService.getMy()
+      .then((response) => {
+        let articles = response.data as Array<{ [key: string]: any }>
+        articles = articles.map((article, i) => {
+          return {
+            ...article,
+            path: '/article/' + article.id,
+          }
+        })
+
+        this.context.commit('setMyArticles', articles)
+        return Promise.resolve(articles);
+      })
+  }
+
   get error() {
     return this.errors[0]
   }
@@ -67,6 +91,18 @@ class App extends VuexModule {
     }
 
     return this.articleList.filter((article) => {
+      return this.tags.some((tag) => {
+        return article.tags.includes(tag)
+      })
+    })
+  }
+
+  get myArticles() {
+    if (this.tags.length === 0) {
+      return this.myArticleList
+    }
+
+    return this.myArticleList.filter((article) => {
       return this.tags.some((tag) => {
         return article.tags.includes(tag)
       })

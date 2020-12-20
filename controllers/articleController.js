@@ -31,9 +31,10 @@ let create = async (req, res) => {
 }
 
 let getList = async (req, res) => {
-  const { tags, userID } = req.body
+  const { tags } = req.body
+
   let articles
-  if (!tags && !userID) {
+  if (!tags) {
     articles = await Article.find({ publish: true }).exec()
   } else {
     articles = await Article.find({ author: userID, publish: true }).exec()
@@ -54,20 +55,44 @@ let getList = async (req, res) => {
   res.status(200).json(articles);
 }
 
+let getMy = async (req, res) => {
+  const author = req.user.id
+  console.log('getMy', author)
+  let articles = await Article.find({author}).exec()
+  
+  articles = articles.map(article => {
+    return {
+      id: article.id,
+      src: article.src,
+      title: article.title,
+      subtitle: article.blocks.find((block) => block.type === 'paragraph').data.text.split(' ').slice(0, 100).join(' ')+'...',
+      tags: article.tags,
+      views: article.views,
+      image: article.image,
+      publish: article.publish,
+    }
+  })
+
+  res.status(200).json(articles);
+}
+
 let getOne = async (req, res) => {
   const articleID = req.params.id
   let article = await Article.findById(articleID).exec()
   
   if (article) {
-    let { blocks, version, time, title, image } = article
-    article.views++
-    await article.save()
+    const user = req.user.id
+    let { blocks, version, time, title, image, author } = article
+
+    if (author.toString() !== user) {
+      article.views++
+      await article.save()
+    }
     
     res.status(200).json({ blocks, version, time, title, image });
   } else {
     res.status(404).json('Статья не найдена');
   }
-  
 }
 
 let update = async (req, res) => {
@@ -83,5 +108,6 @@ module.exports = {
   getList,
   getOne,
   update,
-  remove
+  remove,
+  getMy
 }

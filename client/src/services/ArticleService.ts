@@ -8,6 +8,10 @@ class ArticleService {
     return axios.get(API_URL, { headers: authHeader() });
   }
 
+  public getMy() {
+    return axios.get(API_URL + 'my', { headers: authHeader() });
+  }
+
   public getOne(id: string) {
     return axios.get(API_URL + id, { headers: authHeader() })
       .then((response) => {
