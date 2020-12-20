@@ -15,12 +15,12 @@ router.post('/',
   (req, res) => {
     const tempPath = req.file.path;
     const newName = `images/${uuidv4()}.png`
-    const targetPath = path.join(__dirname, '../' + newName);
+    const targetPath = path.join(__dirname, '..', newName);
     
     fs.rename(tempPath, targetPath, err => {
       if (err) return send(res).ServerError("Oops! Something went wrong!", err.message)
 
-      res.status(200).json({ filename: config.get('baseUrl') + newName })
+      res.status(200).json({ filename: config.get('baseUrl') +'/'+ newName })
     });
   } 
 );
