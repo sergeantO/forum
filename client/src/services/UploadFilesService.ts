@@ -8,8 +8,8 @@ class UploadFilesService {
     const formData = new FormData()
 
     formData.append('file', file)
-    
-    let headers: { [key:string]: any } = authHeader()
+
+    const headers: { [key: string]: any } = authHeader()
     headers['Content-Type'] = 'multipart/form-data'
 
     return axios.post(API_URL, formData, {

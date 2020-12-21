@@ -1,36 +1,25 @@
 <template>
-   <v-container fluid grid-list-xl>
-      <v-layout wrap justify-space-around>
-        <v-flex xs8 v-for="article in articles" :key="article.id">
-          <article-prewiev :article="article"></article-prewiev>
-        </v-flex>
-      </v-layout>
-    </v-container>
+  <v-container fluid>
+    <article-list :articles="articles" />
+  </v-container>
 </template>
-
-
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
 const App = namespace('App');
 
-import { mdiEye } from '@mdi/js';
-import ArticlePrewiev from '../components/ArticlePrewiev.vue'
+import ArticleList from '../components/ArticleList.vue'
 
 @Component({
-  components: { 'article-prewiev': ArticlePrewiev },
+  components: { 'article-list': ArticleList },
 })
-export default class Article extends Vue {
+export default class Home extends Vue {
   @App.Getter
   public articles!: boolean;
 
   @App.Action
   private getArticles!: () => Promise<any>
-
-  private icons = {
-    mdiEye,
-  }
 
   private created() {
     document.title = 'Home'

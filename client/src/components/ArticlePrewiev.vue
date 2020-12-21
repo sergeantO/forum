@@ -1,15 +1,17 @@
 <template>
-  <v-card outlined>
+  <v-card elevation=0 class="ma-2" max-width='48%' style="flex: 1 1 48%;">
     <v-img 
       v-if="article.image"
       :src="article.image"
       class="white--text align-end"
       gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.9)"
-      height="150px"
+      height="200px"
     >
       <v-card-title>{{ article.title.toUpperCase() }}</v-card-title>
     </v-img>
+
     <v-card-title v-else>{{ article.title.toUpperCase() }}</v-card-title>
+
     <v-card-subtitle>
       <a class="mr-3"
         v-for="(tag, index) in article.tags"
@@ -18,14 +20,12 @@
       >#{{ tag }}</a>
     </v-card-subtitle>
     
-    <v-card-text>{{ article.subtitle }}</v-card-text>
+    <v-card-text v-html="article.subtitle" />
 
-    <v-divider class="mx-4"></v-divider>
-    
     <v-card-actions>
 
       <v-btn
-        color="deep-purple lighten-2"
+        color="primary"
         :to="article.path"
         text 
       >
@@ -34,26 +34,39 @@
       
       <v-spacer></v-spacer>
 
-      <v-chip
+      <v-btn 
         v-if="article.publish === true"
-        class="ma-2"
+        fab
+        small
+        text
         color="primary"
-        text-color="white"
-        close
         @click:close="unpublish"
       >
-        Опубликованно
-      </v-chip>
+        <v-icon>{{ icons.mdiBookmark }}</v-icon>
+      </v-btn>
+
+      <v-btn 
+        v-if="article.publish === false"
+        fab
+        small
+        text
+        color="primary"
+        @click="edit"
+      >
+        <v-icon>{{ icons.mdiPen }}</v-icon>
+      </v-btn>
+
       <v-btn text>
         <v-icon>{{ icons.mdiEye }}</v-icon>
         <span class="ml-2">{{ article.views }}</span>
       </v-btn>
+
     </v-card-actions>
   </v-card>
 </template>
 
 <script lang='ts'>
-import { mdiEye } from '@mdi/js';
+import { mdiEye, mdiPen, mdiBookmark } from '@mdi/js';
 
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
@@ -69,6 +82,8 @@ export default class ArticlePrewiev extends Vue {
 
   private icons = {
     mdiEye,
+    mdiPen,
+    mdiBookmark,
   }
 
   private searchByTag(tag: string) {
@@ -76,7 +91,11 @@ export default class ArticlePrewiev extends Vue {
   }
 
   private unpublish() {
+    // todo
+  }
 
+  private edit() {
+    // todo
   }
 
 };
