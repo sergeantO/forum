@@ -62,6 +62,10 @@ export default class Search extends Vue {
 
   private isOpenSearch = false
 
+  private mounted() {
+    this.select = this.tags
+  }
+
   @Watch('select')
   private onChildChanged(val: string[], oldVal: string[]) {
     if (this.tags !== val) {

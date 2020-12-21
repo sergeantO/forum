@@ -12,7 +12,14 @@ import List from '@editorjs/list'
 // @ts-ignore
 import Table from '@editorjs/table'
 // @ts-ignore
-import ImageTool from '@editorjs/image';
+import ImageTool from '@editorjs/image'
+// @ts-ignore
+import CodeTool from '@editorjs/code'
+// @ts-ignore
+import InlineCode from '@editorjs/inline-code'
+// @ts-ignore
+import Quote from '@editorjs/quote'
+
 
 import { OutputData } from '@editorjs/editorjs/types/data-formats'
 
@@ -41,6 +48,12 @@ export default class Editor extends Vue {
             },
           },
         },
+        inlineCode: {
+          class: InlineCode,
+          shortcut: 'CMD+SHIFT+M',
+        },
+        code: CodeTool,
+        quote: Quote,
       },
       minHeight: 20,
     }

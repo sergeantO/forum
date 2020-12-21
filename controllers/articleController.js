@@ -1,4 +1,5 @@
 const { Article } = require("../model/Article");
+const { User } = require("../model/User");
 
 let create = async (req, res) => {
   const {time, version, title, tags, image, publish } = req.body
@@ -30,49 +31,53 @@ let create = async (req, res) => {
   });
 }
 
-let getList = async (req, res) => {
-  const { tags } = req.body
-
-  let articles
-  if (!tags) {
-    articles = await Article.find({ publish: true }).exec()
+let articleProcessing = (article) => {
+  const firstParagraph = article.blocks.find((block) => block.type === 'paragraph')
+  let subtitle
+  if (firstParagraph) {
+    const words = firstParagraph.data.text.split(' ')
+    subtitle = (words.length > 80) ? words.slice(0, 80).join(' ')+'...' : words.join(' ')
   } else {
-    articles = await Article.find({ author: userID, publish: true }).exec()
+    subtitle = ''
   }
 
-  articles = articles.map(article => {
-    return {
-      id: article.id,
-      src: article.src,
-      title: article.title,
-      subtitle: article.blocks.find((block) => block.type === 'paragraph').data.text.split(' ').slice(0, 100).join(' ')+'...',
-      tags: article.tags,
-      views: article.views,
-      image: article.image
-    }
-  })
+  return {
+    id: article.id,
+    src: article.src,
+    title: article.title,
+    subtitle: subtitle,
+    tags: article.tags,
+    views: article.views,
+    image: article.image
+  }
+}
 
-  res.status(200).json(articles);
+let getList = async (req, res) => {
+  const tags = (req.query.tags) ? Array.from(req.query.tags).map((tag) => tag.toLowerCase()) : null
+
+  let articleList = await Article.find({ publish: true }).exec()
+  
+  // filter
+  if (tags) {
+    articleList = articleList
+      .filter((article) => {
+        return tags.every(element => {
+          return article.tags
+            .map((tag) => tag.toLowerCase())
+            .indexOf(element) > -1
+        })
+      })
+  } 
+  
+  articleList = articleList.map((article) => articleProcessing(article))
+
+  res.status(200).json(articleList);
 }
 
 let getMy = async (req, res) => {
   const author = req.user.id
-  console.log('getMy', author)
   let articles = await Article.find({author}).exec()
-  
-  articles = articles.map(article => {
-    return {
-      id: article.id,
-      src: article.src,
-      title: article.title,
-      subtitle: article.blocks.find((block) => block.type === 'paragraph').data.text.split(' ').slice(0, 100).join(' ')+'...',
-      tags: article.tags,
-      views: article.views,
-      image: article.image,
-      publish: article.publish,
-    }
-  })
-
+  articles = articles.map(article => articleProcessing(article))
   res.status(200).json(articles);
 }
 
@@ -103,11 +108,46 @@ let remove = async (req, res) => {
 
 };
 
+let dislike = async (req, res) => {
+  const articleId = req.params.articleId
+  const userId = req.user.id
+
+  const user = await User.findById(userId);
+  console.log(user);
+
+  res.status(200).json({ articleId, userId, isLike: false })
+
+};
+
+let like = async (req, res) => {
+  const articleId = req.params.articleId
+  const userId = req.user.id
+
+  let article = await Article.findById(articleId).exec()
+  const user = await User.findById(userId);
+
+  // let intersection = arrA.filter(x => arrB.includes(x))
+
+  // article.ratings
+  // console.log(user.skills);
+  // console.log(article);
+
+  // for (let vegetable of recipeMap.keys()) {
+  //   alert(vegetable); // огурец, помидор, лук
+  // }
+
+  // let intersection = arrA.filter(x => arrB.includes(x));
+  
+  res.status(200).json({ articleId, userId, isLike: true })
+};
+
 module.exports = {
   create,
   getList,
   getOne,
   update,
   remove,
-  getMy
+  getMy,
+  dislike,
+  like,
 }

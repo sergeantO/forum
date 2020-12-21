@@ -49,7 +49,7 @@ class App extends VuexModule {
 
   @Action({ rawError: true })
   public getArticles() {
-    return ArticleService.getList()
+    return ArticleService.getList(this.tags)
       .then((response) => {
         let articles = response.data as Array<{ [key: string]: any }>
         articles = articles.map((article, i) => {
