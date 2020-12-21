@@ -73,9 +73,9 @@ export default {
       UploadService.upload(this.currentFile, (event) => {
         this.progress = Math.round((100 * event.loaded) / event.total);
       })
-        .then((response) => {
+        .then((url) => {
           this.message = 'Изображение успешно загружено'
-          this.$emit('uploaded', response.data.filename)
+          this.$emit('uploaded', url)
         })
         .catch(() => {
           this.progress = 0;

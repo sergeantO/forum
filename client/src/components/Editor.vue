@@ -9,6 +9,11 @@ import EditorJS from '@editorjs/editorjs'
 import Header from '@editorjs/header'
 // @ts-ignore
 import List from '@editorjs/list'
+// @ts-ignore
+import Table from '@editorjs/table'
+// @ts-ignore
+import ImageTool from '@editorjs/image';
+
 import { OutputData } from '@editorjs/editorjs/types/data-formats'
 
 @Component
@@ -25,6 +30,17 @@ export default class Editor extends Vue {
       tools: {
         header: Header,
         list: List,
+        table: Table,
+        image: {
+          class: ImageTool,
+          config: {
+            field: 'file',
+            endpoints: {
+              byFile: 'http://localhost:4000/api/upload', // backend file uploader endpoint
+              // byUrl: 'http://localhost:8008/fetchUrl', // endpoint that provides uploading by Url
+            },
+          },
+        },
       },
       minHeight: 20,
     }

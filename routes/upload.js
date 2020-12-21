@@ -10,7 +10,6 @@ const config = require("config")
 
 
 router.post('/', 
-  auth,
   upload.single("file" /* name attribute of <file> element in your form */),
   (req, res) => {
     const tempPath = req.file.path;
@@ -20,7 +19,15 @@ router.post('/',
     fs.rename(tempPath, targetPath, err => {
       if (err) return send(res).ServerError("Oops! Something went wrong!", err.message)
 
-      res.status(200).json({ filename: config.get('baseUrl') +'/'+ newName })
+      const json = {
+        "success" : 1,
+        "file": {
+            "url" : config.get('baseUrl') +'/'+ newName,
+            // ... and any additional fields you want to store, such as width, height, color, extension, etc
+      }
+    }
+
+      res.status(200).json(json)
     });
   } 
 );

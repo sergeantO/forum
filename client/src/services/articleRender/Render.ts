@@ -48,6 +48,24 @@ class Render {
       return `<${style} id=${id}> ${list} </${style}>`
     },
 
+    table: ({ data, id = '' }: IData) => {
+      let table = '';
+
+      if (data.content) {
+        table = (data.content as string[][])
+          .map((tr) => {
+            const html = tr
+              .map((td) => `<td>${td}</td>`)
+              .reduce((a, c) => a + c, '');
+
+            return `<tr>${html}</tr>`
+          })
+          .reduce((a, c) => a + c, '');
+      }
+
+      return `<table border="1" id=${id}>${table}</table>`
+    },
+
     image: ({ data, id = '' }: IData) => {
       const caption = data.caption ? data.caption : 'Image'
       return `<img id=${id} src='${data.file ? data.file.url : ''}' alt='${caption}' />`

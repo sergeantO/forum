@@ -4,11 +4,11 @@
       offset="2"  
       @mousedown='getPoint' 
       @mouseup='mouseup'>
-    <div id="article" v-html="rawHtml"></div>
+    <div id="article" class="article" v-html="rawHtml"></div>
     <div class="tools" ref='tool'>
       <v-btn fab small dark color='primary' @click='add'><v-icon>{{ icons.plus }}</v-icon></v-btn>
     </div>
-    </v-col>
+  </v-col>
 
 </template>
 
@@ -128,6 +128,10 @@ export default class Article extends Vue {
   display: none;
   position: absolute;
   z-index: 1;
+}
+
+.article > img {
+  max-width: 100% !important;
 }
 
 </style>

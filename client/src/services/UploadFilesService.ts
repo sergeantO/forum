@@ -15,7 +15,7 @@ class UploadFilesService {
     return axios.post(API_URL, formData, {
       headers,
       onUploadProgress,
-    });
+    }).then((response) => response.data.file.url)
   }
 }
 
