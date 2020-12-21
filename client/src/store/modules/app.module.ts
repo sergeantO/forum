@@ -16,7 +16,7 @@ type ArticleListType = Array<{
 class App extends VuexModule {
   public articleList: ArticleListType = []
   public myArticleList: ArticleListType = []
-  
+
   public tags: string[] = []
   public errors: string[] = []
   public messages: string[] = []
@@ -44,7 +44,7 @@ class App extends VuexModule {
 
   @Mutation
   public setTags(tags: string[]) {
-    this.tags = tags.map((tag) => tag.toLowerCase())
+    this.tags = tags
   }
 
   @Action({ rawError: true })
@@ -91,9 +91,13 @@ class App extends VuexModule {
     }
 
     return this.articleList.filter((article) => {
-      return this.tags.some((tag) => {
-        return article.tags.includes(tag)
-      })
+      return this.tags
+        .map((tag) => tag.toLowerCase())
+        .every((tag) => {
+          return article.tags
+            .map((articleTag) => articleTag.toLowerCase())
+            .includes(tag)
+        })
     })
   }
 
@@ -103,9 +107,13 @@ class App extends VuexModule {
     }
 
     return this.myArticleList.filter((article) => {
-      return this.tags.some((tag) => {
-        return article.tags.includes(tag)
-      })
+      return this.tags
+        .map((tag) => tag.toLowerCase())
+        .every((tag) => {
+          return article.tags
+            .map((articleTag) => articleTag.toLowerCase())
+            .includes(tag)
+        })
     })
   }
 
