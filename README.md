@@ -30,3 +30,9 @@
 - TypeScript (vue-property-decorator, vuex-class)
 - EditorJS
 
+## RoadMap
+- [ ] WYSIWYG для автора статьи 
+- [ ] Чтение статей
+- [ ] Заметки и комментарии
+- [x] Закладки
+
