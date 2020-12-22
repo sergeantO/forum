@@ -11,6 +11,8 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
+app.get("/api/init", require("./controllers/initController"))
+
 app.use('/images', express.static(__dirname + '/images'))
 
 app.use("/api/user", require("./routes/user"))
@@ -22,6 +24,8 @@ if (process.env.NODE_ENV === 'production') {
   app.use('/', express.static(path.join(__dirname, 'client', 'dist')))
 
   app.get('*', (req, res) => {
+    const referer = req.headers.referrer || req.headers.referer
+    console.log('referer > ', referer)
     res.sendFile( path.join(__dirname, 'client', 'dist', 'index.html') )
   })
 }
