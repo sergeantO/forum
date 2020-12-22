@@ -128,7 +128,6 @@ let newInvite = async (req, res) => {
 let checkUsername = async (req, res) => {
   const username = req.params.username
   const user = await User.findOne({username});
-  console.log(user)
   const valid = (user) ? false : true 
   res.status(200).json(valid);
 }

@@ -26,8 +26,10 @@
         <p>Администрация не несет ответственности за контент, который производит сообщество. Мнение администрации может отличаться от мнения автора любой статьи</p>
       </v-col>
       <v-col cols=4>
-        <v-card class="pa-5">
+        <v-card>
+          <v-card-title style="background: #6200ea; color: #fff">Регистрация</v-card-title>
           <v-form
+            class="pa-5"
             ref="form"
             v-model="valid"
             lazy-validation

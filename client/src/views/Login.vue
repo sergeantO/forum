@@ -2,46 +2,50 @@
   <v-container fluid fill-height>
     <v-layout align-center justify-center>
       <v-flex xs12 sm10 md8>
-        <v-form
-          ref="form"
-          v-model="valid"
-        >
-          <v-alert
-            v-show="errors.length"
-            v-for="(error, index) in errors"
-            :key="index"
-            border="left"
-            colored-border
-            dense
-            type="error"
+        <v-card>
+          <v-card-title style="background: #6200ea; color: #fff">Авторизация</v-card-title>
+          <v-form
+            class="pa-5"
+            ref="form"
+            v-model="valid"
           >
-            {{ error }}
-          </v-alert>
-          <v-text-field
-            v-model="user.email"
-            :rules="emailRules"
-            label="E-mail"
-            required
-          ></v-text-field>
+            <v-alert
+              v-show="errors.length"
+              v-for="(error, index) in errors"
+              :key="index"
+              border="left"
+              colored-border
+              dense
+              type="error"
+            >
+              {{ error }}
+            </v-alert>
+            <v-text-field
+              v-model="user.email"
+              :rules="emailRules"
+              label="E-mail"
+              required
+            ></v-text-field>
 
-          <v-text-field
-            v-model="user.password"
-            :counter="10"
-            type="password"
-            :rules="nameRules"
-            label="Password"
-            required
-          ></v-text-field>
+            <v-text-field
+              v-model="user.password"
+              :counter="10"
+              type="password"
+              :rules="nameRules"
+              label="Password"
+              required
+            ></v-text-field>
 
-          <v-btn
-            :disabled="!valid"
-            color="success"
-            class="mr-4"
-            @click="handleLogin"
-          >
-            Validate
-          </v-btn>
-        </v-form>
+            <v-btn
+              :disabled="!valid"
+              color="primary"
+              class="mr-4"
+              @click="handleLogin"
+            >
+              Войти
+            </v-btn>
+          </v-form>
+        </v-card>
       </v-flex>
     </v-layout>
   </v-container>
