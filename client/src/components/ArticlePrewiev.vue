@@ -35,14 +35,25 @@
       <v-spacer></v-spacer>
 
       <v-btn 
-        v-if="article.publish === true"
+        v-if="article.marked"
         fab
         small
         text
         color="primary"
-        @click:close="unpublish"
+        @click="unbookmark"
       >
         <v-icon>{{ icons.mdiBookmark }}</v-icon>
+      </v-btn>
+
+      <v-btn 
+        v-else
+        fab
+        small
+        text
+        color="primary"
+        @click="bookmark"
+      >
+        <v-icon>{{ icons.mdiBookmarkOutline }}</v-icon>
       </v-btn>
 
       <v-btn 
@@ -66,32 +77,48 @@
 </template>
 
 <script lang='ts'>
-import { mdiEye, mdiPen, mdiBookmark } from '@mdi/js';
+import { mdiEye, mdiPen, mdiBookmark, mdiBookmarkOutline } from '@mdi/js';
 
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
 const App = namespace('App');
 
+import ArticleService from '../services/ArticleService';
+
 @Component
 export default class ArticlePrewiev extends Vue {
   @Prop()
-  public article!: object
+  public article!: any
 
   @App.Mutation
   private setTags!: (tags: string[]) => void
+
+  @App.Mutation
+  private setBookmarkStatus!: (data: {articleId: string, status: boolean}) => void
 
   private icons = {
     mdiEye,
     mdiPen,
     mdiBookmark,
+    mdiBookmarkOutline,
   }
 
   private searchByTag(tag: string) {
     this.setTags([tag])
   }
 
-  private unpublish() {
-    // todo
+  private bookmark() {
+    ArticleService.bookmark(this.article.id)
+      .then((id) => {
+        this.setBookmarkStatus({articleId: this.article.id, status: true})
+      })
+  }
+
+  private unbookmark() {
+    ArticleService.unbookmark(this.article.id)
+      .then((id) => {
+        this.setBookmarkStatus({articleId: this.article.id, status: false})
+      })
   }
 
   private edit() {

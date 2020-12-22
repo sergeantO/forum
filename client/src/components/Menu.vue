@@ -87,7 +87,7 @@ export default class Menu extends Vue {
 
   private items = [
     { title: 'Мои статьи', icon: this.icons.myArticles, to: '/my-articles' },
-    { title: 'Мои закладки', icon: this.icons.bookmarks, to: '' },
+    { title: 'Мои закладки', icon: this.icons.bookmarks, to: '/bookmarks' },
     { title: 'Мои заметки', icon: this.icons.notes, to: '/notes' },
     { title: 'Мои команды', icon: this.icons.myTeams, to: '' },
     { title: 'Модерация', icon: this.icons.gavel, to: '' },

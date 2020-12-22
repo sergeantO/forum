@@ -21,6 +21,33 @@ class ArticleService {
       });
   }
 
+  public bookmark(id: string) {
+    return axios.post(API_URL + id + '/bookmark', {}, { headers: authHeader() })
+      .then((response) => response.data.id);
+  }
+
+  public unbookmark(id: string) {
+    return axios.post(API_URL + id + '/unbookmark', {}, { headers: authHeader() })
+      .then((response) => response.data.id);
+  }
+
+  public getBookmarks() {
+    return axios.get(API_URL + '/bookmarks', { headers: authHeader() })
+  }
+
+  public like(ArticleId: string) {
+    return axios.post(API_URL + ArticleId + '/like', {}, { headers: authHeader() })
+      .then((response) => {
+        return Promise.resolve(response.data);
+      })
+  }
+  public dislike(ArticleId: string) {
+    return axios.post(API_URL + ArticleId + '/dislike', {}, { headers: authHeader() })
+      .then((response) => {
+        return Promise.resolve(response.data);
+      })
+  }
+
   // todo: типизировать данные
   public create(data: any) {
     return axios.post(API_URL, data, { headers: authHeader() });

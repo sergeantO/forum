@@ -1,5 +1,6 @@
 const { Article } = require("../model/Article");
 const { User } = require("../model/User");
+const { Bookmark } = require("../model/Bookmark");
 
 let create = async (req, res) => {
   const {time, version, title, tags, image, publish } = req.body
@@ -31,7 +32,7 @@ let create = async (req, res) => {
   });
 }
 
-let articleProcessing = (article) => {
+let articleProcessing = async (article, userId) => {
   const firstParagraph = article.blocks.find((block) => block.type === 'paragraph')
   let subtitle
   if (firstParagraph) {
@@ -41,6 +42,11 @@ let articleProcessing = (article) => {
     subtitle = ''
   }
 
+  const bookmark = await Bookmark.findOne({
+    articleId: article.id, 
+    userId,
+  })
+  
   return {
     id: article.id,
     src: article.src,
@@ -48,11 +54,13 @@ let articleProcessing = (article) => {
     subtitle: subtitle,
     tags: article.tags,
     views: article.views,
-    image: article.image
+    image: article.image,
+    marked: !!bookmark
   }
 }
 
 let getList = async (req, res) => {
+  const userId = req.user.id
   const tags = (req.query.tags) ? Array.from(req.query.tags).map((tag) => tag.toLowerCase()) : null
 
   let articleList = await Article.find({ publish: true }).exec()
@@ -68,8 +76,8 @@ let getList = async (req, res) => {
         })
       })
   } 
-  
-  articleList = articleList.map((article) => articleProcessing(article))
+
+  articleList = await Promise.all( articleList.map( async (article) => articleProcessing(article, userId) ) );
 
   res.status(200).json(articleList);
 }
@@ -77,7 +85,7 @@ let getList = async (req, res) => {
 let getMy = async (req, res) => {
   const author = req.user.id
   let articles = await Article.find({author}).exec()
-  articles = articles.map(article => articleProcessing(article))
+  articleList = await Promise.all( articleList.map( async (article) => articleProcessing(article, author) ) );
   res.status(200).json(articles);
 }
 
@@ -141,6 +149,73 @@ let like = async (req, res) => {
   res.status(200).json({ articleId, userId, isLike: true })
 };
 
+let bookmark = async (req, res) => {
+  const articleId = req.params.articleId
+  const userId = req.user.id
+
+  try {
+    let bookmark = await Bookmark.findOne({
+      articleId, 
+      userId,
+    })
+
+    if (bookmark) {
+      return res.status(400).json({ msg: "Bookmark already exist"})
+    }
+  } catch (e) {
+    return res.status(400).json({ msg: "Bookmark already exist", e });
+  }
+
+  let bookmark
+  try {
+    bookmark = new Bookmark({
+      articleId, 
+      userId,
+    })
+    await bookmark.save()
+  } catch (err) {
+    res.status(500).json(err);
+  }
+  
+  res.status(201).json({
+    id: bookmark.id
+  });
+}
+
+let unbookmark = async (req, res) => {
+  const articleId = req.params.articleId
+  const userId = req.user.id
+
+  let bookmark
+  try {
+    bookmark = await Bookmark.findOneAndDelete({
+      articleId, 
+      userId,
+    })
+  } catch (err) {
+    res.status(500).json(err);
+  }
+  
+  res.status(200).json({
+    id: bookmark.id
+  })
+}
+
+let getBookmarks = async (req, res) => {
+  const userId = req.user.id
+
+  let bookmarkIdList = await Bookmark.find({ userId }).exec()
+  bookmarkIdList = bookmarkIdList.map((bm) => bm.articleId)
+  
+  let bookmarkList = await Article.find({
+    '_id': { $in: bookmarkIdList }
+  })
+
+  bookmarkList = await Promise.all( bookmarkList.map( async (article) => articleProcessing(article, userId) ) );
+
+  res.status(200).json(bookmarkList);
+}
+
 module.exports = {
   create,
   getList,
@@ -150,4 +225,7 @@ module.exports = {
   getMy,
   dislike,
   like,
+  unbookmark,
+  bookmark,
+  getBookmarks
 }

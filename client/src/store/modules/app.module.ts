@@ -2,13 +2,14 @@ import ArticleService from '@/services/ArticleService';
 import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
 
 type ArticleListType = Array<{
-    id: number;
+    id: string;
     image: string;
     title: string;
     subtitle: string;
     tags: string[];
     path: string;
-    views?: number
+    views?: number,
+    marked: boolean
 }>
 
 
@@ -16,6 +17,7 @@ type ArticleListType = Array<{
 class App extends VuexModule {
   public articleList: ArticleListType = []
   public myArticleList: ArticleListType = []
+  public myBookmarks: ArticleListType = []
 
   public tags: string[] = []
   public errors: string[] = []
@@ -35,6 +37,24 @@ class App extends VuexModule {
   @Mutation
   public setArticleList(articles: ArticleListType) {
     this.articleList = articles
+  }
+
+  @Mutation
+  public setBookmarks(articles: ArticleListType) {
+    this.myBookmarks = articles
+  }
+
+  @Mutation
+  public setBookmarkStatus(data: {articleId: string, status: boolean}) {
+    const bookmark = this.myBookmarks.find((bm) => bm.id === data.articleId)
+    if (bookmark) {
+      bookmark.marked = data.status
+    }
+
+    const article = this.articleList.find((bm) => bm.id === data.articleId)
+    if (article) {
+      article.marked = data.status
+    }
   }
 
   @Mutation
@@ -65,6 +85,23 @@ class App extends VuexModule {
   }
 
   @Action({ rawError: true })
+  public getBookmarks() {
+    return ArticleService.getBookmarks()
+      .then((response) => {
+        let articles = response.data as Array<{ [key: string]: any }>
+        articles = articles.map((article, i) => {
+          return {
+            ...article,
+            path: '/article/' + article.id,
+          }
+        })
+
+        this.context.commit('setBookmarks', articles)
+        return Promise.resolve(articles);
+      })
+  }
+
+  @Action({ rawError: true })
   public getMyArticles() {
     return ArticleService.getMy()
       .then((response) => {
@@ -83,6 +120,10 @@ class App extends VuexModule {
 
   get error() {
     return this.errors[0]
+  }
+
+  get bookmarks() {
+    return this.myBookmarks
   }
 
   get articles() {
