@@ -3,23 +3,18 @@
     app
     color="#fff"
     elevation=2
-    min-height=80
-    height=80
+    min-height=90
+    height=90
     clipped-right
   >
     <!-- LOGO -->
     <router-link to='/' style='text-decoration: none'>
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-5"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <h1>LOGO</h1>
+      <div class='logo'>
+        <div class="d-flex align-center">
+          <v-icon x-large color='primary' class="mr-5">{{ icons.mdiLibrary }}</v-icon>
+          <h1>FORUM</h1>
+        </div>
+        <p>Публичная экспертиза идей</p>
       </div>
     </router-link>
     <!-- END LOGO -->
@@ -32,7 +27,7 @@
       text
     >
       <v-icon>{{ icons.mdiLogin }}</v-icon>
-      <span class="mr-2">Login</span>
+      <span class="ml-3">Login</span>
     </v-btn>
 
     <Search v-if="isLoggedIn"></Search>
@@ -56,6 +51,7 @@ const App = namespace('App');
 
 import {
   mdiLogin,
+  mdiLibrary,
 } from '@mdi/js'
 
 @Component({
@@ -64,6 +60,7 @@ import {
 export default class Header extends Vue {
   private icons = {
     mdiLogin,
+    mdiLibrary,
   }
 
   @Auth.Getter
@@ -77,3 +74,30 @@ export default class Header extends Vue {
   }
 }
 </script>
+
+<style scoped>
+.logo {
+  margin-top: 15px;
+}
+
+.logo  h1 {
+  /*
+    color: black;
+    -webkit-text-fill-color: white;  Will override color (regardless of order)
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: black;
+  */
+
+  color: white;
+  text-shadow:
+   -1px -1px 0 #333,  
+    1px -1px 0 #333,
+    -1px 1px 0 #333,
+     1px 1px 0 #333;
+}
+
+.logo > p {
+  font-size: 14px;
+  color: #000;
+}
+</style>
