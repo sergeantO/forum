@@ -37,6 +37,28 @@ class AuthService {
       invite,
     });
   }
+
+  public checkUsername(username: string) {
+    return axios
+      .get(API_URL + 'checkusername/' + username)
+      .then((response) => {
+        if (response.status === 200) {
+          return response.data
+        }
+        throw Error()
+      })
+  }
+
+  public checkemail(email: string) {
+    return axios
+      .get(API_URL + 'checkemail/' + email)
+      .then((response) => {
+        if (response.status === 200) {
+          return response.data
+        }
+        throw Error()
+      })
+  }
 }
 
 export default new AuthService();

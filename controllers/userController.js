@@ -125,9 +125,26 @@ let newInvite = async (req, res) => {
   });
 }
 
+let checkUsername = async (req, res) => {
+  const username = req.params.username
+  const user = await User.findOne({username});
+  console.log(user)
+  const valid = (user) ? false : true 
+  res.status(200).json(valid);
+}
+
+let checkEmail = async (req, res) => {
+  const email = req.params.email
+  const user = await User.findOne({email});
+  const valid = (user) ? false : true
+  res.status(200).json(valid);
+}
+
 module.exports = {
   signup,
   login,
   me,
-  newInvite
+  newInvite,
+  checkUsername,
+  checkEmail
 }

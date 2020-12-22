@@ -1,73 +1,110 @@
 <template>
-  <v-container bg fill-height grid-list-md text-xs-center>
-    <v-layout row wrap align-center>
-      <v-flex>
-        <v-form
-          ref="form"
-          v-model="valid"
-        >
-          <v-text-field
-            v-model="user.username"
-            :counter="15"
-            :rules="nameRules"
-            label="Name"
-            required
-          ></v-text-field>
-
-          <v-text-field
-            v-model="user.email"
-            :rules="emailRules"
-            label="E-mail"
-            required
-          ></v-text-field>
-
-          <v-text-field
-            v-model="user.password"
-            counter
-            type="password"
-            :rules="passwordRules"
-            label="Password"
-            required
-          ></v-text-field>
-
-          <v-text-field
-            v-model="user.rePassword"
-            counter
-            type="password"
-            :rules="[this.passwordConfirmationRule]"
-            label="Repeat password"
-            required
-          ></v-text-field>
-
-          <v-text-field
-            v-model="user.invite"
-            label="Invite"
-            disabled
-            required
-          ></v-text-field>
-
-          <v-btn
-            :disabled="!valid"
-            color="success"
-            @click="handleRegistration"
+  <v-container fluid bg fill-height>
+    <v-row>
+      <v-col cols=8 offset=2>
+        <h1>Добро пожаловать!</h1>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols=6 offset=1>
+        <h2>Правила</h2>
+        <p>У нас запрещено: </p>
+        <ul>
+          <li>Пытаться любым доступным способом нарушить работу системы оценивания. Например:
+            <ul>
+              <li>Lеанонимизировать автора статьи, как на этом ресурсе, так и на сторонних;</li>
+              <li>Eстраивать "набеги" с целью резко повысить или понизить рейтинг какой-либо статьи;</li>
+              <li>Cоздавать себе второй аккаунт;</li>
+              <li>и т.д.</li>
+            </ul>
+          </li>
+          <li>Пытаться в грубой форме нарушать законодательство (например, призывами к насилию)</li>
+        </ul>
+        <br />
+        <p><b>Все что не запрещено, разрешено! Мы любим свободу слова</b></p>
+        <p>Любая дальнейшая модерация ресурса осуществляется сообществом, а не администрацией</p>
+        <p>Администрация не несет ответственности за контент, который производит сообщество. Мнение администрации может отличаться от мнения автора любой статьи</p>
+      </v-col>
+      <v-col cols=4>
+        <v-card class="pa-5">
+          <v-form
+            ref="form"
+            v-model="valid"
+            lazy-validation
           >
-            <v-progress-circular
-              v-if="loading"
-              indeterminate
+            <v-text-field
+              v-model.lazy="user.username"
+              :counter="15"
+              :rules="nameRules"
+              label="Name"
+              required
+              error-count="2"
+              :error-messages="validErrors.username"
+              @blur="onUsernameChange"
+            ></v-text-field>
+
+            <v-text-field
+              v-model.lazy="user.email"
+              :rules="emailRules"
+              label="E-mail"
+              error-count="2"
+              :error-messages="validErrors.email"
+              required
+              @blur="onEmailChange"
+            ></v-text-field>
+
+            <v-text-field
+              v-model="user.password"
+              counter
+              type="password"
+              :rules="passwordRules"
+              label="Password"
+              required
+            ></v-text-field>
+
+            <v-text-field
+              v-model="user.rePassword"
+              counter
+              type="password"
+              :rules="[this.passwordConfirmationRule]"
+              label="Repeat password"
+              required
+            ></v-text-field>
+
+            <v-text-field
+              v-model="user.invite"
+              label="Invite"
+              disabled
+              required
+            ></v-text-field>
+
+            <v-btn
+              block
+              :disabled="!valid"
               color="primary"
-            ></v-progress-circular>
-            <span v-else>Регистрация</span>
-          </v-btn>
-        </v-form>
-      </v-flex>
-    </v-layout>
+              @click="handleRegistration"
+            >
+              <v-progress-circular
+                v-if="loading"
+                indeterminate
+                color="white"
+              ></v-progress-circular>
+              <span v-else>Регистрация</span>
+            </v-btn>
+          </v-form>
+        </v-card>
+      </v-col>
+    </v-row>
+      
   </v-container>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
 const Auth = namespace('User');
+
+import AuthService from '../services/AuthService';
 
 @Component
 export default class Invite extends Vue {
@@ -83,6 +120,11 @@ export default class Invite extends Vue {
   }
   private loading: boolean = false
   private message: string = ''
+
+  private validErrors = {
+    username: [] as string[],
+    email: [] as string[],
+  }
 
   private valid = true
 
@@ -110,6 +152,36 @@ export default class Invite extends Vue {
 
   @Auth.Action
   private register!: (data: any) => Promise<any>;
+
+  private onUsernameChange() {
+    if (this.user.username === '') {
+      this.validErrors.username = []
+      return
+    }
+
+    AuthService.checkUsername(this.user.username)
+      .then((valid: boolean) => {
+        this.validErrors.username = valid ? [] : ['Данное имя уже используется']
+      })
+      .catch((e) => {
+        this.validErrors.username = []
+      })
+  }
+
+  private onEmailChange() {
+    if (this.user.email === '') {
+      this.validErrors.email = []
+      return
+    }
+
+    AuthService.checkemail(this.user.email)
+      .then((valid: boolean) => {
+        this.validErrors.email = valid ? [] : ['Данный E-mail уже используется']
+      })
+      .catch((e) => {
+        this.validErrors.email = []
+      })
+  }
 
   private created() {
     if (this.isLoggedIn) {
