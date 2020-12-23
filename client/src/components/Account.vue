@@ -1,5 +1,5 @@
 <template>
-  <v-list-item link to='/Profile'>
+  <v-list-item link to='/profile/0'>
     <v-list-item-avatar v-if="currentUser.image">
       <v-img src="https://randomuser.me/api/portraits/men/24.jpg"></v-img>
     </v-list-item-avatar>
@@ -29,9 +29,7 @@ export default class Account extends Vue {
     mdiAccount,
   }
 
-
   @Auth.State('user')
   private currentUser!: any;
-
 }
 </script>

@@ -96,11 +96,18 @@ let login = async (req, res) => {
   }
 }
 
-let me = async (req, res) => {
+let userInfo = async (req, res) => {
+  const userId = (req.params.userId === '0') ? req.user.id : req.params.userId
   try {
-    // request.user is getting fetched from Middleware after token authentication
-    const user = await User.findById(req.user.id);
-    res.json(user);
+    const user = await User.findById(userId);
+    res.status(200).json({
+      id: user.id,
+      username: user.username,
+      createdAt: user.createdAt,
+      email: user.email,
+      inviter: user.inviter,
+      skills: user.skills,
+    });
   } catch (e) {
     res.send({ message: "Error in Fetching user" });
   }
@@ -142,7 +149,7 @@ let checkEmail = async (req, res) => {
 module.exports = {
   signup,
   login,
-  me,
+  userInfo,
   newInvite,
   checkUsername,
   checkEmail

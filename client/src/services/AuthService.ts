@@ -24,8 +24,16 @@ class AuthService {
   }
 
   public newInvite() {
-    return axios.get(API_URL + 'newInvite', { headers: authHeader() }).then((response) => {
+    return axios.get(API_URL + 'newInvite', { headers: authHeader() })
+    .then((response) => {
       return response.data.invitation
+    })
+  }
+
+  public info(userId: string) {
+    return axios.get(API_URL + userId, { headers: authHeader() })
+    .then((response) => {
+      return response.data
     })
   }
 

@@ -25,6 +25,11 @@ const UserSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'User',
     required: true
+  },
+  skills: {
+    type: Map,
+    of: Number,
+    default: { 'mentoring': 0, 'moderation': 0 }
   }
 });
 

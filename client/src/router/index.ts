@@ -22,7 +22,7 @@ const routes: RouteConfig[] = [
     component: () => import(/* webpackChunkName: "login" */ '../views/Invite.vue'),
   },
   {
-    path: '/profile',
+    path: '/profile/:userId',
     name: 'Profile',
     component: () => import(/* webpackChunkName: "login" */ '../views/Profile.vue'),
   },
