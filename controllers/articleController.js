@@ -24,7 +24,7 @@ let create = async (req, res) => {
   
     await article.save()
   } catch (err) {
-    res.status(500).json(err);
+    return res.status(500).json(err);
   }
   
   res.status(201).json({
@@ -84,9 +84,9 @@ let getList = async (req, res) => {
 
 let getMy = async (req, res) => {
   const author = req.user.id
-  let articles = await Article.find({author}).exec()
+  let articleList = await Article.find({author}).exec()
   articleList = await Promise.all( articleList.map( async (article) => articleProcessing(article, author) ) );
-  res.status(200).json(articles);
+  res.status(200).json(articleList);
 }
 
 let getOne = async (req, res) => {

@@ -10,9 +10,9 @@ const ArticleSchema = mongoose.Schema({
     type: Array,
     required: true
   },
-  tags: {
-    type: Array,
-    required: true
+  ratings: {
+    type: Map,
+    of: Number,
   },
   time: {
     type: String,
@@ -42,7 +42,24 @@ const ArticleSchema = mongoose.Schema({
     type: Boolean,
     default: false
   }
+}, {
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
 });
+
+// Create a virtual property `tags` with a getter and setter.
+ArticleSchema.virtual('tags').
+  get(function () {
+    return Array.from( this.ratings.keys() ) 
+  }).
+  set(function (tags) {
+    let ratings = tags.reduce((map, tag) => {
+      map[tag] = 0;
+      return map;
+    }, {})
+
+    this.ratings = ratings
+  });
 
 const articleValidationRules = () => {
   return [
