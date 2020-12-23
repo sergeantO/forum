@@ -14,11 +14,7 @@ class ArticleService {
 
   public getOne(id: string) {
     return axios.get(API_URL + id, { headers: authHeader() })
-      .then((response) => {
-        const { blocks, version, time, title, image } = response.data
-        const editorData = { blocks, version, time }
-        return { editorData, title, image }
-      });
+      .then((response) => response.data)
   }
 
   public bookmark(id: string) {
@@ -37,15 +33,11 @@ class ArticleService {
 
   public like(ArticleId: string) {
     return axios.post(API_URL + ArticleId + '/like', {}, { headers: authHeader() })
-      .then((response) => {
-        return Promise.resolve(response.data);
-      })
+      .then( (response) => Promise.resolve(response.data))
   }
   public dislike(ArticleId: string) {
     return axios.post(API_URL + ArticleId + '/dislike', {}, { headers: authHeader() })
-      .then((response) => {
-        return Promise.resolve(response.data);
-      })
+      .then( (response) => Promise.resolve(response.data))
   }
 
   // todo: типизировать данные

@@ -1,6 +1,7 @@
 const { Article } = require("../model/Article");
 const { User } = require("../model/User");
 const { Bookmark } = require("../model/Bookmark");
+const { Rating } = require("../model/Rating");
 
 let create = async (req, res) => {
   const {time, version, title, tags, image, publish } = req.body
@@ -46,6 +47,11 @@ let articleProcessing = async (article, userId) => {
     articleId: article.id, 
     userId,
   })
+
+  let rating = await Rating.findOne({ userId, articleId: article.id, });
+  if (rating) {
+    var isLike = rating.isLike
+  }
   
   return {
     id: article.id,
@@ -55,6 +61,7 @@ let articleProcessing = async (article, userId) => {
     tags: article.tags,
     views: article.views,
     image: article.image,
+    isLike,
     marked: !!bookmark
   }
 }
@@ -90,19 +97,24 @@ let getMy = async (req, res) => {
 }
 
 let getOne = async (req, res) => {
-  const articleID = req.params.id
-  let article = await Article.findById(articleID).exec()
+  const articleId = req.params.id
+  let article = await Article.findById(articleId).exec()
   
   if (article) {
-    const user = req.user.id
-    let { blocks, version, time, title, image, author } = article
+    const userId = req.user.id
+    let { blocks, version, time, title, image, author, dislikes, likes, views } = article
 
-    if (author.toString() !== user) {
+    if (author.toString() !== userId) {
       article.views++
       await article.save()
     }
     
-    res.status(200).json({ blocks, version, time, title, image });
+    let rating = await Rating.findOne({ userId, articleId, });
+    if (rating) {
+      var isLike = rating.isLike
+    }
+    
+    res.status(200).json({ blocks, version, time, title, image, isLike, dislikes, likes, views });
   } else {
     res.status(404).json('Статья не найдена');
   }
@@ -120,33 +132,100 @@ let dislike = async (req, res) => {
   const articleId = req.params.articleId
   const userId = req.user.id
 
-  const user = await User.findById(userId);
-  console.log(user);
+  const article = await Article.findById(articleId).exec()
+  const user = await User.findById(userId).exec()
+  const author = await User.findById(article.author).exec()
 
-  res.status(200).json({ articleId, userId, isLike: false })
+  if ( user._id.equals(author._id) ) {
+    return res.status(403).json({ msg: 'Вы не можете оценить свою статью ))' })
+  }
 
+  let rating = await Rating.findOne({ userId: user.id, articleId: article.id, });
+  if (rating) {
+    return res.status(400).json({ msg: "Вы не можете оценить статью повторно ((" });
+  }
+
+  const userSkills = user.skills
+  rating = new Rating({
+    isLike:  false,
+    userId: user.id,
+    userSkills: userSkills,
+    articleId: article.id,
+  })
+
+  await rating.save()
+
+  const articleRatings = article.ratings
+
+  articleRatings.forEach((rating, key) => {
+    const up = ( userSkills.has(key) ) ? 1 + Math.floor(userSkills.get(key) / 100) : 1
+    
+    articleRatings.set(key, rating - up)
+
+    const authorSkills = author.skills
+    if ( authorSkills.has(key) ) {
+      let skillVal = authorSkills.get(key)
+      authorSkills.set(key, skillVal - up)
+    } else {
+      authorSkills.set(key, -up)
+    }
+  });
+
+  article.dislikes++
+  await author.save()
+  await article.save()
+  
+  res.status(200).json({ articleId, userId, isLike: false, articleRatings, userSkills })
 };
 
 let like = async (req, res) => {
   const articleId = req.params.articleId
   const userId = req.user.id
 
-  let article = await Article.findById(articleId).exec()
-  const user = await User.findById(userId);
+  const article = await Article.findById(articleId).exec()
+  const user = await User.findById(userId).exec()
+  const author = await User.findById(article.author).exec()
 
-  // let intersection = arrA.filter(x => arrB.includes(x))
+  if ( user._id.equals(author._id) ) {
+    return res.status(403).json({ msg: 'Вы не можете оценить свою статью ))' })
+  }
 
-  // article.ratings
-  // console.log(user.skills);
-  // console.log(article);
+  let rating = await Rating.findOne({ userId: user.id, articleId: article.id, });
+  if (rating) {
+    return res.status(400).json({ msg: "Вы не можете оценить статью повторно ((" });
+  }
 
-  // for (let vegetable of recipeMap.keys()) {
-  //   alert(vegetable); // огурец, помидор, лук
-  // }
+  const userSkills = user.skills
+  rating = new Rating({
+    isLike:  true,
+    userId: user.id,
+    userSkills: userSkills,
+    articleId: article.id,
+  })
 
-  // let intersection = arrA.filter(x => arrB.includes(x));
+  await rating.save()
+
+  const articleRatings = article.ratings
+
+  articleRatings.forEach((rating, key) => {
+    const up = ( userSkills.has(key) ) ? 1 + Math.floor(userSkills.get(key) / 100) : 1
+    
+    articleRatings.set(key, rating + up)
+
+    const authorSkills = author.skills
+    if ( authorSkills.has(key) ) {
+      let skillVal = authorSkills.get(key)
+      authorSkills.set(key, skillVal + up)
+    } else {
+      authorSkills.set(key, up)
+    }
+  });
+
+  article.likes++
+  await author.save()
+  await article.save()
   
-  res.status(200).json({ articleId, userId, isLike: true })
+  res.status(200).json({ articleId, userId, isLike: true, articleRatings, userSkills })
 };
 
 let bookmark = async (req, res) => {

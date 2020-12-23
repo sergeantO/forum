@@ -35,6 +35,26 @@
       <v-spacer></v-spacer>
 
       <v-btn 
+        v-if="article.isLike === true"
+        fab
+        small
+        text
+        color="primary"
+      >
+        <v-icon>{{ icons.like }}</v-icon>
+      </v-btn>
+
+      <v-btn 
+        v-if="article.isLike === false"
+        fab
+        small
+        text
+        color="primary"
+      >
+        <v-icon>{{ icons.dislike }}</v-icon>
+      </v-btn>
+
+      <v-btn 
         v-if="article.marked"
         fab
         small
@@ -77,7 +97,7 @@
 </template>
 
 <script lang='ts'>
-import { mdiEye, mdiPen, mdiBookmark, mdiBookmarkOutline } from '@mdi/js';
+import { mdiEye, mdiPen, mdiBookmark, mdiBookmarkOutline,  mdiThumbUp, mdiThumbDown } from '@mdi/js';
 
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
@@ -101,6 +121,8 @@ export default class ArticlePrewiev extends Vue {
     mdiPen,
     mdiBookmark,
     mdiBookmarkOutline,
+    like: mdiThumbUp,
+    dislike: mdiThumbDown,
   }
 
   private searchByTag(tag: string) {

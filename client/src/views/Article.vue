@@ -1,10 +1,12 @@
 <template>
   <v-container fluid class='pt-0'>
+    
     <v-row>
       <v-col cols='8' offset="2">
         <h1 class="my-7">{{ title }} </h1>
       </v-col>
     </v-row>
+
     <v-row>
       <v-img
         v-if="image"
@@ -27,42 +29,57 @@
         />
       </v-col>
     </v-row>
-    <ArticleActions />
+
     <v-row>
+      <v-col offset="2">
+        <v-btn-toggle v-model="toggle" group >
+          <v-btn text @click="onLike">
+            <v-icon class="mr-3">{{ icons.like }}</v-icon> 
+            <span v-if="isArticleInfoVisable">{{ likes }}</span>
+          </v-btn>
+          <v-btn text @click="onDislike">
+            <v-icon class="mr-3">{{ icons.dislike }}</v-icon>
+            <span v-if="isArticleInfoVisable">{{ dislikes }}</span>
+          </v-btn>
+        </v-btn-toggle>
+      </v-col>
+      <v-col offset="2">
+        <span>Views: {{ views }}</span>
+        <br />
+        <span v-if="isArticleInfoVisable">KPI: {{ KPI }}</span>
+      </v-col>
+    </v-row>
+
+    <v-row v-if="isArticleInfoVisable">
       <v-col cols='8' offset="2">
         <v-divider></v-divider>
         <Comments />
       </v-col>
     </v-row>
+
   </v-container>
 </template>
 
 <script lang="ts">
-import { Component, Ref, Vue } from 'vue-property-decorator';
-// import { namespace } from 'vuex-class';
-// const App = namespace('App');
+import { Component, Ref, Vue, Watch } from 'vue-property-decorator'
 
-import { mdiNotePlusOutline } from '@mdi/js';
+import { mdiNotePlusOutline, mdiThumbUp, mdiThumbDown } from '@mdi/js'
 
-import ArticleService from '../services/ArticleService';
-import NewNote from '../components/NewNote.vue';
-import NoteService from '../services/NoteService';
-import Comments from '../components/Comments.vue';
+import ArticleService from '../services/ArticleService'
+import NewNote from '../components/NewNote.vue'
+import NoteService from '../services/NoteService'
+import Comments from '../components/Comments.vue'
 import render from '../services/articleRender/Render'
 import RenderArticle from '../components/RenderedArticle.vue'
-import ArticleActions from '../components/ArticleActions.vue';
 
 @Component({
-  components: { NewNote, Comments, RenderArticle, ArticleActions },
+  components: { NewNote, Comments, RenderArticle },
 })
 export default class Article extends Vue {
-  public $route: any; // bugfix
-
-  @Ref()
-  private readonly tool!: HTMLElement
-
   private icons = {
     plus: mdiNotePlusOutline,
+    like: mdiThumbUp,
+    dislike: mdiThumbDown,
   }
 
   private title: string = ''
@@ -71,14 +88,34 @@ export default class Article extends Vue {
   private noteData: any = ''
   private rawHtml: string = ''
 
-  private created() {
+  private toggle: any = -1
+
+  private isLike?: any = null
+  private likes: number = 0
+  private dislikes: number = 0
+  private views: number = 0
+
+
+  private mounted() {
     ArticleService.getOne(this.id)
     .then((data) => {
+      this.isLike = data.isLike
+      this.dislikes = data.dislikes
+      this.likes = data.likes
+      this.views = data.views
+
       this.title = data.title
       this.image = data.image
-      this.rawHtml = render.parser(data.editorData).join('')
+
+      const { blocks, version, time } = data
+      this.rawHtml = render.parser({ blocks, version, time }).join('')
+
       document.title = data.title
     })
+  }
+
+  private get isArticleInfoVisable() {
+    return (this.toggle === 1) || (this.toggle === 0)
   }
 
   private onNewNote(noteData: any) {
@@ -89,6 +126,42 @@ export default class Article extends Vue {
     }
   }
 
+  private get KPI() {
+    return ( (this.likes - this.dislikes) / this.views ).toFixed(3) || 0
+  }
+
+  @Watch('isLike')
+  private onIsLikeChange(val: boolean) {
+    if (val === true) {
+      this.toggle = 0
+    } else if (val === false) {
+      this.toggle = 1
+    } else {
+      this.toggle = null
+    }
+  }
+
+  // todo: вывести оповещение при ошибке
+  private onDislike() {
+    ArticleService.dislike(this.id)
+      .then(() => {
+        this.dislikes++
+      })
+      .catch((e) => {
+        this.toggle = -1
+      })
+  }
+
+  private onLike() {
+    ArticleService.like(this.id)
+      .then(() => {
+        this.likes++
+      })
+      .catch((e) => {
+        this.toggle = -1
+      })
+  }
+
   private get id() {
     return this.$route.params.id
   }
@@ -97,6 +170,7 @@ export default class Article extends Vue {
 </script>
 
 <style scoped>
-
-
+.v-item--active {
+  color: blueviolet !important;
+}
 </style>
