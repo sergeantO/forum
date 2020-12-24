@@ -20,14 +20,14 @@
 ### Сервер
 - NodeJS
 - Express
-- MongoDB
+- [MongoDB](https://mongoosejs.com/)
 - [ ] Swagger
 
 ### Клиент
 - VueJS
 - VueX
-- TypeScript (vue-property-decorator, vuex-class)
-- EditorJS
+- TypeScript ([vue-property-decorator](https://github.com/kaorun343/vue-property-decorator),[vuex-class](https://github.com/ktsn/vuex-class))
+- [EditorJS](https://editorjs.io/)
 
 ## RoadMap
 - [x] Регистрация и инвайты

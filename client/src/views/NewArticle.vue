@@ -1,22 +1,39 @@
 <template>
   <v-container mt-10>
-    <v-text-field label="Название статьи" v-model="title"></v-text-field>
+    <v-text-field 
+      label="Название статьи" 
+      v-model="title" 
+    />
+
     <tags-provider
       :key="refreshKey"
       :tags="tags"
       :isSearch = 'false'
       @update:tags="onUpdateTags"
     />
+
     <UploadImage 
       :key="refreshKey+10"
       @uploaded='setFileName' 
       :image="image" 
     />
+
     <Editor 
       :key="refreshKey+20" 
       :initData="editorData" 
       ref="editor"
     />
+    <v-row v-if="!valid" justify="center" align="center"> 
+      <v-col cols='8'>
+        <v-alert
+          border="left"
+          color="pink darken-1"
+          dark
+        >
+          Нельзя создать статью без заголовка, текста и хотя бы одного тега
+        </v-alert>
+      </v-col>
+    </v-row>
     <v-row justify="center" align="center"> 
       <v-col cols='2'>
         <v-btn block @click="save" color="primary">Сохранить</v-btn>
@@ -57,12 +74,19 @@ export default class NewArticle extends Vue {
   private tags: string[] = []
   private publish = false
   private editorData: OutputData = { blocks: [] }
+  private valid = true
 
   @Ref()
   private readonly editor!: Editor
 
   private get id() {
     return this.$route.params.id
+  }
+
+  private validateForm(data: any): boolean {
+    return (data.tags.length > 0) &&
+      (data.title.length > 0) &&
+      (data.blocks.length > 0)
   }
 
   private setFileName(filename: string) {
@@ -104,6 +128,12 @@ export default class NewArticle extends Vue {
           tags: this.tags,
           publish: this.publish,
         }
+
+        if ( !this.validateForm(data) ) {
+          this.valid = false
+          return
+        }
+
         if (this.id === undefined) {
           ArticleService.create(data)
             .then((response) => {

@@ -1,5 +1,12 @@
 <template>
-  <v-container fluid class='pt-0'>
+  <v-container fluid v-if="isError">
+    <v-row>
+      <v-col cols='8' offset="2">
+        <h1 class="my-7">Статья не существует или была удалена автором</h1>
+      </v-col>
+    </v-row>
+  </v-container>
+  <v-container fluid v-else>
     
     <v-row>
       <v-col cols='8' offset="2">
@@ -10,7 +17,7 @@
     <v-row>
       <v-img
         v-if="image"
-        :src='image'
+        :src="image"
         height="550px"
         gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.9)"
       />
@@ -32,7 +39,7 @@
 
     <v-row>
       <v-col offset="2">
-        <v-btn-toggle v-model="toggle" group >
+        <v-btn-toggle v-model="toggle" group>
           <v-btn text @click="onLike">
             <v-icon class="mr-3">{{ icons.like }}</v-icon> 
             <span v-if="isArticleInfoVisable">{{ likes }}</span>
@@ -96,6 +103,7 @@ export default class Article extends Vue {
   private views: number = 0
   private isMyArticle: boolean
 
+  private isError = false
 
   private mounted() {
     ArticleService.getOne(this.id)
@@ -113,6 +121,10 @@ export default class Article extends Vue {
         this.rawHtml = render.parser({ blocks, version, time }).join('')
 
         document.title = data.title
+      })
+      .catch(() => {
+        this.isError = true
+        document.title = 'Стать не существует'
       })
   }
 
@@ -145,6 +157,10 @@ export default class Article extends Vue {
 
   // todo: вывести оповещение при ошибке
   private onDislike() {
+    if (this.toggle === 0 || this.toggle === 1) {
+      return
+    }
+
     ArticleService.dislike(this.id)
       .then(() => {
         this.dislikes++
@@ -155,6 +171,10 @@ export default class Article extends Vue {
   }
 
   private onLike() {
+    if (this.toggle === 0 || this.toggle === 1) {
+      return
+    }
+
     ArticleService.like(this.id)
       .then(() => {
         this.likes++
