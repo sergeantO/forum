@@ -62,7 +62,8 @@ let articleProcessing = async (article, userId) => {
     views: article.views,
     image: article.image,
     isLike,
-    marked: !!bookmark
+    marked: !!bookmark,
+    isMyArticle: article.author.toString() === userId,
   }
 }
 
@@ -113,19 +114,37 @@ let getOne = async (req, res) => {
     if (rating) {
       var isLike = rating.isLike
     }
+
+    const data = { blocks, version, time, 
+      title, image, isLike, dislikes, likes, views, 
+      isMyArticle: article.author.toString() === userId 
+    }
     
-    res.status(200).json({ blocks, version, time, title, image, isLike, dislikes, likes, views });
+    res.status(200).json(data);
   } else {
     res.status(404).json('Статья не найдена');
   }
 }
 
 let update = async (req, res) => {
-
+  const articleId = req.params.articleId
+  const updatedArticle = req.body
+  try{
+    await Article.findByIdAndUpdate(articleId, updatedArticle)
+    res.status(200).json(updatedArticle)
+  } catch(err) {
+    return res.status(500).json({err})
+  }
 };
 
 let remove = async (req, res) => {
-
+  const articleId = req.params.articleId
+  try{
+    await Article.findByIdAndRemove(articleId)
+    res.status(200).json({ deleted: true })
+  } catch(err) {
+    return res.status(500).json({err})
+  }
 };
 
 let dislike = async (req, res) => {

@@ -54,27 +54,12 @@
         <v-icon>{{ icons.dislike }}</v-icon>
       </v-btn>
 
-      <v-btn 
-        v-if="article.marked"
-        fab
-        small
-        text
-        color="primary"
-        @click="unbookmark"
-      >
-        <v-icon>{{ icons.mdiBookmark }}</v-icon>
-      </v-btn>
-
-      <v-btn 
-        v-else
-        fab
-        small
-        text
-        color="primary"
-        @click="bookmark"
-      >
-        <v-icon>{{ icons.mdiBookmarkOutline }}</v-icon>
-      </v-btn>
+      <bookmark-btn
+        v-if="!article.isMyArticle"
+        :marked="article.marked" 
+        @unbookmark="unbookmark"
+        @bookmark="bookmark"
+      />
 
       <v-btn 
         v-if="article.publish === false"
@@ -97,15 +82,24 @@
 </template>
 
 <script lang='ts'>
-import { mdiEye, mdiPen, mdiBookmark, mdiBookmarkOutline,  mdiThumbUp, mdiThumbDown } from '@mdi/js';
-
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
 const App = namespace('App');
 
+import { mdiEye,
+  mdiPen, mdiThumbUp,
+  mdiThumbDown, mdiDelete,
+} from '@mdi/js';
+
 import ArticleService from '../services/ArticleService';
 
-@Component
+import BookmarkBtn from './articleActions/BookmarkBtn.vue'
+
+@Component({
+  components: {
+    'bookmark-btn': BookmarkBtn,
+  },
+})
 export default class ArticlePrewiev extends Vue {
   @Prop()
   public article!: any
@@ -119,10 +113,9 @@ export default class ArticlePrewiev extends Vue {
   private icons = {
     mdiEye,
     mdiPen,
-    mdiBookmark,
-    mdiBookmarkOutline,
     like: mdiThumbUp,
     dislike: mdiThumbDown,
+    delete: mdiDelete,
   }
 
   private searchByTag(tag: string) {
