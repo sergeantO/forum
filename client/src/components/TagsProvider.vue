@@ -27,7 +27,7 @@ import {
 @Component
 export default class TagsProvider extends Vue {
   @Prop({ default: true, type: Boolean })
-  private readonly isSearch: boolean = true
+  private readonly isSearch: boolean
 
   @Prop()
   private tags!: string[]
@@ -37,21 +37,24 @@ export default class TagsProvider extends Vue {
   @App.State('popularTags')
   private popularTags!: string[]
 
-  private settings = {
-    dense: true,
-    outlined: true,
-    label: 'Теги',
+  private get settings() {
+    if (this.isSearch) {
+      return {
+        dense: true,
+        outlined: true,
+        label: '',
+      }
+    } else {
+      return {
+        dense: false,
+        outlined: false,
+        label: 'Теги',
+      }
+    }
   }
 
   private mounted() {
     this.selectedTags = this.tags
-
-    if (this.isSearch) {
-      this.settings.label = ''
-    } else {
-      this.settings.dense = false
-      this.settings.outlined = false
-    }
   }
 
   @Watch('selectedTags')
