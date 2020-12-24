@@ -1,18 +1,18 @@
-import axios from 'axios';
+import API from './API';
 import authHeader from './auth-header';
 
 const API_URL = 'http://localhost:4000/api/notes/';
 
 class NoteService {
   public getArticleNotes(ArticleId: string) {
-    return axios.get(API_URL + ArticleId, { headers: authHeader() })
+    return API.get(API_URL + ArticleId, { headers: authHeader() })
       .then((response) => {
         return Promise.resolve(response.data);
       })
   }
 
   public getMyNotes() {
-    return axios.get(API_URL + 'my', { headers: authHeader() })
+    return API.get(API_URL + 'my', { headers: authHeader() })
       .then((response) => {
         return Promise.resolve(response.data);
       })
@@ -23,7 +23,7 @@ class NoteService {
     hash?: string, articleId: string, articleName: string,
     save: boolean, publish: boolean,
   }) {
-    return axios.post(API_URL, noteData, { headers: authHeader() })
+    return API.post(API_URL, noteData, { headers: authHeader() })
       .then((response) => {
         return Promise.resolve(response.data);
       })

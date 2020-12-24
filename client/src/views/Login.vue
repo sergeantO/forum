@@ -82,7 +82,7 @@ export default class Login extends Vue {
 
   private created() {
     if (this.isLoggedIn) {
-      this.$router.push('/profile');
+      this.$router.push('/profile/0');
     }
     document.title = 'Добро пожаловать'
   }
@@ -98,7 +98,7 @@ export default class Login extends Vue {
         this.login(this.user)
         .then(
           (data) => {
-            this.$router.push('/profile');
+            this.$router.push('/profile/0');
           })
         .catch((errors) => {
             this.loading = false;

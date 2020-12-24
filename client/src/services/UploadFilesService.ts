@@ -1,4 +1,4 @@
-import axios from 'axios';
+import API from './API';
 import authHeader from './auth-header';
 
 const API_URL = 'http://localhost:4000/api/upload';
@@ -12,7 +12,7 @@ class UploadFilesService {
     const headers: { [key: string]: any } = authHeader()
     headers['Content-Type'] = 'multipart/form-data'
 
-    return axios.post(API_URL, formData, {
+    return API.post(API_URL, formData, {
       headers,
       onUploadProgress,
     }).then((response) => response.data.file.url)
