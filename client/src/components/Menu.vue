@@ -63,6 +63,7 @@ import {
   mdiNotePlusOutline,
   mdiGavel,
   mdiBookmarkMultipleOutline,
+  mdiHomeVariantOutline,
 } from '@mdi/js'
 
 @Component({
@@ -83,9 +84,11 @@ export default class Menu extends Vue {
     notes: mdiNotePlusOutline,
     gavel: mdiGavel,
     bookmarks: mdiBookmarkMultipleOutline,
+    home: mdiHomeVariantOutline,
   }
 
   private items = [
+    { title: 'Главная', icon: this.icons.home, to: '/' },
     { title: 'Мои статьи', icon: this.icons.myArticles, to: '/my-articles' },
     { title: 'Мои закладки', icon: this.icons.bookmarks, to: '/bookmarks' },
     { title: 'Мои заметки', icon: this.icons.notes, to: '/notes' },

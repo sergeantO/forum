@@ -121,7 +121,7 @@ let getOne = async (req, res) => {
     }
 
     const data = { blocks, version, time, 
-      title, image, isLike, dislikes, likes, views, tags,
+      title, image, isLike, dislikes, likes, views: (views + 1), tags,
       isMyArticle: article.author.toString() === userId 
     }
     

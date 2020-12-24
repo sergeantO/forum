@@ -94,6 +94,7 @@ export default class Article extends Vue {
   private likes: number = 0
   private dislikes: number = 0
   private views: number = 0
+  private isMyArticle: boolean
 
 
   private mounted() {
@@ -103,6 +104,7 @@ export default class Article extends Vue {
         this.dislikes = data.dislikes
         this.likes = data.likes
         this.views = data.views
+        this.isMyArticle = data.isMyArticle
 
         this.title = data.title
         this.image = data.image
@@ -115,7 +117,7 @@ export default class Article extends Vue {
   }
 
   private get isArticleInfoVisable() {
-    return (this.toggle === 1) || (this.toggle === 0)
+    return (this.toggle === 1) || (this.toggle === 0) || (this.isMyArticle)
   }
 
   private onNewNote(noteData: any) {

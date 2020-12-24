@@ -8,7 +8,9 @@
       <v-expansion-panel-content>
         <v-card v-for="(note, id) in notes" :key='id' class="my-3">
           <v-card-subtitle> {{ note.comment }}  </v-card-subtitle>
-          <v-card-subtitle> {{ note.text }}  </v-card-subtitle>
+          <v-card-subtitle> 
+            <p class="quote">{{ note.text }}</p>
+          </v-card-subtitle>
         </v-card>
       </v-expansion-panel-content>
     </v-expansion-panel>
@@ -39,6 +41,9 @@ export default class Comments extends Vue {
 </script>
 
 <style scoped>
-
+.quote {
+  border-left: 2px solid blueviolet;
+  padding-left: 5px;
+}
 
 </style>
