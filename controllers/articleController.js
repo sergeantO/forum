@@ -61,9 +61,11 @@ let articleProcessing = async (article, userId) => {
     tags: article.tags,
     views: article.views,
     image: article.image,
+
     isLike,
     marked: !!bookmark,
     isMyArticle: article.author.toString() === userId,
+    publish: article.publish,
   }
 }
 
@@ -71,7 +73,10 @@ let getList = async (req, res) => {
   const userId = req.user.id
   const tags = (req.query.tags) ? Array.from(req.query.tags).map((tag) => tag.toLowerCase()) : null
 
-  let articleList = await Article.find({ publish: true }).exec()
+  let articleList = await Article.find({ 
+    publish: true, 
+    author: { $ne : userId },  
+  }).exec()
   
   // filter
   if (tags) {
@@ -103,7 +108,7 @@ let getOne = async (req, res) => {
   
   if (article) {
     const userId = req.user.id
-    let { blocks, version, time, title, image, author, dislikes, likes, views } = article
+    let { blocks, version, time, title, image, author, dislikes, likes, views, tags } = article
 
     if (author.toString() !== userId) {
       article.views++
@@ -116,7 +121,7 @@ let getOne = async (req, res) => {
     }
 
     const data = { blocks, version, time, 
-      title, image, isLike, dislikes, likes, views, 
+      title, image, isLike, dislikes, likes, views, tags,
       isMyArticle: article.author.toString() === userId 
     }
     

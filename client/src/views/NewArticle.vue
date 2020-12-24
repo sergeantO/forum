@@ -1,13 +1,22 @@
 <template>
   <v-container mt-10>
     <v-text-field label="Название статьи" v-model="title"></v-text-field>
-    <tags-provider  
+    <tags-provider
+      :key="refreshKey"
       :tags="tags"
       :isSearch = 'false'
       @update:tags="onUpdateTags"
     />
-    <UploadImage @uploaded='setFileName' />
-    <Editor ref="editor"/>
+    <UploadImage 
+      :key="refreshKey+10"
+      @uploaded='setFileName' 
+      :image="image" 
+    />
+    <Editor 
+      :key="refreshKey+20" 
+      :initData="editorData" 
+      ref="editor"
+    />
     <v-row justify="center" align="center"> 
       <v-col cols='2'>
         <v-btn block @click="save" color="primary">Сохранить</v-btn>
@@ -16,8 +25,6 @@
         <v-checkbox v-model="publish" label="Опубликовать"></v-checkbox>
       </v-col>
     </v-row>
-    
-    
   </v-container>
 </template>
 
@@ -41,22 +48,45 @@ import TagsProvider from '../components/TagsProvider.vue'
 })
 export default class NewArticle extends Vue {
   public $router: any
+  private refreshKey = 0
 
   private title = ''
-  private imageFileName = ''
+  private image = {
+    url: '',
+  }
   private tags: string[] = []
-
   private publish = false
+  private editorData: OutputData = { blocks: [] }
 
   @Ref()
   private readonly editor!: Editor
 
-  private setFileName(filename: string) {
-    this.imageFileName = filename
+  private get id() {
+    return this.$route.params.id
   }
 
-  private created() {
-    document.title = 'Новая статья'
+  private setFileName(filename: string) {
+    this.image.url = filename
+  }
+
+  private mounted() {
+    if (this.id === undefined) {
+      document.title = 'Новая статья'
+    } else {
+      ArticleService.getOne(this.id)
+        .then((data) => {
+          console.log(data)
+          this.image.url = data.image
+          this.title = data.title
+          this.tags = data.tags
+          const { blocks, version, time } = data
+          this.editorData = { blocks, version, time }
+          document.title = data.title
+        })
+        .then(() => {
+          this.refreshKey++
+        })
+    }
   }
 
   private onUpdateTags(val: string[]) {
@@ -71,7 +101,7 @@ export default class NewArticle extends Vue {
         const data = {
           ...doc,
           title: this.title,
-          image: this.imageFileName,
+          image: this.image.url,
           tags: this.tags,
           publish: this.publish,
         }

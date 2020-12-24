@@ -44,26 +44,22 @@ const routes: RouteConfig[] = [
   {
     path: '/settings',
     name: 'Settings',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/Settings.vue'),
+  },
+  {
+    path: '/article/edit/new',
+    name: 'New Article',
+    component: () => import(/* webpackChunkName: "about" */ '../views/NewArticle.vue'),
+  },
+  {
+    path: '/article/edit/:id',
+    name: 'Article Edit',
+    component: () => import(/* webpackChunkName: "about" */ '../views/NewArticle.vue'),
   },
   {
     path: '/article/:id',
     name: 'Article',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/Article.vue'),
-  },
-  {
-    path: '/new-article',
-    name: 'NewArticle',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/NewArticle.vue'),
   },
   {
     path: '/about',

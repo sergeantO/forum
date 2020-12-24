@@ -24,65 +24,72 @@
 
       <v-col cols="2">
         <v-btn color="primary" dark block small @click="upload">
-          Upload
-          <v-icon right dark>mdi-cloud-upload</v-icon>
+          <v-icon right dark>{{icons.mdiCloudUploadOutline}}</v-icon>
+          <span class="ml-2">Upload</span>
         </v-btn>
       </v-col>
     </v-row>
 
-    <v-alert v-if="message" border="left" color="blue-grey" dark>
-      {{ message }}
-    </v-alert>
+    <v-img
+      v-if="image.url"
+      :aspect-ratio="16/9"
+      height="150px"
+      :src="image.url"
+    ></v-img>
+
   </div>
 </template>
 
-<script>
+<script lang='ts'>
+import { Component, Prop, Ref, Vue } from 'vue-property-decorator';
 import UploadService from '../services/UploadFilesService';
 
 import {
   mdiCameraAccount,
+  mdiCloudUploadOutline,
 } from '@mdi/js'
 
+@Component
+export default class UploadImage extends Vue {
+  @Prop() private image = { url: '' }
+  private currentFile: any = ''
+  private progress = 0
+  private message = 'sdf'
+  private icons = {
+    mdiCameraAccount,
+    mdiCloudUploadOutline,
+  }
 
-export default {
-  data() {
-    return {
-      currentFile: undefined,
-      progress: 0,
-      message: '',
-      icons: {
-        mdiCameraAccount,
-      },
-    };
-  },
+  private get url() {
+    return this.image.url || ''
+  }
 
-  methods: {
-    selectFile(file) {
-      this.progress = 0;
-      this.currentFile = file;
-    },
+  private selectFile(file: any) {
+    this.progress = 0;
+    this.currentFile = file;
+  }
 
-    upload() {
-      if (!this.currentFile) {
-        this.message = 'Please select a file!';
-        return;
-      }
+  private upload() {
+    if (!this.currentFile) {
+      // this.message = 'Please select a file!';
+      return;
+    }
 
-      this.message = '';
+    this.message = '';
 
-      UploadService.upload(this.currentFile, (event) => {
-        this.progress = Math.round((100 * event.loaded) / event.total);
+    UploadService.upload(this.currentFile, (event) => {
+      this.progress = Math.round((100 * event.loaded) / event.total);
+    })
+      .then((url) => {
+        this.message = 'Изображение успешно загружено'
+        this.$emit('uploaded', url)
       })
-        .then((url) => {
-          this.message = 'Изображение успешно загружено'
-          this.$emit('uploaded', url)
-        })
-        .catch(() => {
-          this.progress = 0;
-          this.message = 'Could not upload the file!';
-          this.currentFile = undefined;
-        });
-    },
-  },
+      .catch(() => {
+        this.progress = 0;
+        // this.message = 'Could not upload the file!';
+        this.currentFile = undefined;
+      });
+  }
+
 }
 </script>

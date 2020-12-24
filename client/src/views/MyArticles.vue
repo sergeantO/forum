@@ -29,7 +29,7 @@ export default class Article extends Vue {
   private getMyArticles!: () => Promise<any>
 
   private createArticle() {
-    this.$router.push('/new-article')
+    this.$router.push('/article/edit/new')
   }
 
   private created() {

@@ -98,20 +98,20 @@ export default class Article extends Vue {
 
   private mounted() {
     ArticleService.getOne(this.id)
-    .then((data) => {
-      this.isLike = data.isLike
-      this.dislikes = data.dislikes
-      this.likes = data.likes
-      this.views = data.views
+      .then((data) => {
+        this.isLike = data.isLike
+        this.dislikes = data.dislikes
+        this.likes = data.likes
+        this.views = data.views
 
-      this.title = data.title
-      this.image = data.image
+        this.title = data.title
+        this.image = data.image
 
-      const { blocks, version, time } = data
-      this.rawHtml = render.parser({ blocks, version, time }).join('')
+        const { blocks, version, time } = data
+        this.rawHtml = render.parser({ blocks, version, time }).join('')
 
-      document.title = data.title
-    })
+        document.title = data.title
+      })
   }
 
   private get isArticleInfoVisable() {

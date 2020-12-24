@@ -25,15 +25,16 @@ import { OutputData } from '@editorjs/editorjs/types/data-formats'
 
 @Component
 export default class Editor extends Vue {
-  @Prop() private readonly readMode!: boolean
-
   @Prop() private readonly initData!: OutputData
-
   private editor!: EditorJS
+  private get document() {
+    return this.initData
+  }
 
   public mounted() {
     const config: { [key: string]: any } = {
       holder: 'editorjs',
+      placeholder: 'Let`s write an awesome story!',
       tools: {
         header: Header,
         list: List,
@@ -58,14 +59,8 @@ export default class Editor extends Vue {
       minHeight: 20,
     }
 
-    if (this.initData) {
-      config.data = this.initData
-    }
-
-    if (this.readMode) {
-      config.readOnly = this.readMode
-    } else {
-      config.placeholder = 'Let`s write an awesome story!'
+    if (this.document) {
+      config.data = this.document
     }
 
     this.editor = new EditorJS(config)

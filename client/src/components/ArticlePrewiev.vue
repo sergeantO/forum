@@ -122,11 +122,14 @@ export default class ArticlePrewiev extends Vue {
   }
 
   private del() {
-    // удаление статьи
+    ArticleService.remove(this.article.id)
+      .then((data) => {
+        console.log(data)
+      })
   }
 
   private edit() {
-    // todo
+    this.$router.push(`/article/edit/${this.article.id}`)
   }
 
 };
