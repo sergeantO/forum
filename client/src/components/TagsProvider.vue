@@ -29,8 +29,10 @@ export default class TagsProvider extends Vue {
   @Prop({ default: true, type: Boolean })
   private readonly isSearch: boolean
 
-  @PropSync('tags', { type: Array })
-  private selectedTags!: string[]
+  @Prop()
+  private tags!: string[]
+
+  private selectedTags: string[] = []
 
   @App.State('popularTags')
   private popularTags!: string[]
@@ -42,12 +44,20 @@ export default class TagsProvider extends Vue {
   }
 
   private mounted() {
+    this.selectedTags = this.tags
+
     if (this.isSearch) {
       this.settings.label = ''
     } else {
       this.settings.dense = false
       this.settings.outlined = false
     }
+  }
+
+  @Watch('selectedTags')
+  private onChengeSelectedTags(val: string[]) {
+    let newTags = val.map((v) => v.trim()).filter((v) => !!v)
+    this.$emit('update:tags', newTags)
   }
 }
 </script>
