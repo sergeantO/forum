@@ -1,15 +1,11 @@
 <template>
   <v-container mt-10>
     <v-text-field label="Название статьи" v-model="title"></v-text-field>
-    <v-combobox
-      v-model="tags"
-      clearable
-      hide-selected
-      multiple
-      chips
-      label="Теги"
-      hide-details
-    ></v-combobox>
+    <tags-provider  
+      :tags="tags"
+      :isSearch = 'false'
+      @update:tags="onUpdateTags"
+    />
     <UploadImage @uploaded='setFileName' />
     <Editor ref="editor"/>
     <v-row justify="center" align="center"> 
@@ -34,9 +30,11 @@ import Editor from '../components/Editor.vue'
 import { OutputData } from '@editorjs/editorjs/types/data-formats';
 import ArticleService from '../services/ArticleService'
 import UploadImage from '../components/UploadImage.vue'
+import TagsProvider from '../components/TagsProvider.vue'
 
 @Component({
   components: {
+    'tags-provider': TagsProvider,
     Editor,
     UploadImage,
   },
@@ -59,6 +57,12 @@ export default class NewArticle extends Vue {
 
   private created() {
     document.title = 'Новая статья'
+  }
+
+  private onUpdateTags(val: string[]) {
+    if (this.tags !== val) {
+      this.tags = val
+    }
   }
 
   private save() {

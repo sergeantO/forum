@@ -1,21 +1,11 @@
 <template>
   <div style="display: inline-flex;">
     <v-slide-x-reverse-transition>
-      <v-combobox
-        v-if="isOpenSearch"
-        v-model="select"
-        :items="items"
-        clearable
-        hide-selected
-        multiple
-        small-chips
-        dense
-        outlined
-        color="primary"
-        light
-        hide-details
-        class='mr-3'
-      ></v-combobox>
+      <tags-provider  
+        v-if="isOpenSearch" 
+        :tags="select"
+        @update:tags="onUpdateTags"
+      />
     </v-slide-x-reverse-transition>
 
     <v-btn
@@ -23,6 +13,7 @@
       fab
       small
       @click="isOpenSearch = !isOpenSearch"
+      class='ml-3'
       color="primary"
     >
       <v-icon>{{ icons.search }}</v-icon>
@@ -35,11 +26,17 @@ import { Component, Vue, Watch } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
 const App = namespace('App')
 
+import TagsProvider from '../components/TagsProvider.vue'
+
 import {
   mdiMagnify,
 } from '@mdi/js'
 
-@Component
+@Component({
+  components: {
+    'tags-provider': TagsProvider,
+  },
+})
 export default class Search extends Vue {
   @App.Mutation
   private setTags!: (tags: string[]) => void
@@ -47,27 +44,15 @@ export default class Search extends Vue {
   @App.State('tags')
   private tags!: string[]
 
-  private icons = {
-    search: mdiMagnify,
-  }
-
+  private icons = { search: mdiMagnify }
   private select: string[] = []
-
-  private items = [
-    'Programming',
-    'Design',
-    'Vue',
-    'Vuetify',
-  ]
-
   private isOpenSearch = false
 
   private mounted() {
     this.select = this.tags
   }
 
-  @Watch('select')
-  private onChildChanged(val: string[], oldVal: string[]) {
+  private onUpdateTags(val: string[]) {
     if (this.tags !== val) {
       this.setTags(val)
     }

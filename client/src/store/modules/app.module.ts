@@ -20,6 +20,13 @@ class App extends VuexModule {
   public myBookmarks: ArticleListType = []
 
   public tags: string[] = []
+  public popularTags = [
+    'Programming',
+    'Design',
+    'Vue',
+    'Vuetify',
+  ]
+
   public errors: string[] = []
   public messages: string[] = []
 
