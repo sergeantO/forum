@@ -29,30 +29,16 @@
         :to="article.path"
         text 
       >
-        Читать
+        <v-icon>{{ icons.read }}</v-icon>
+        <span class="ml-2">Читать</span>
       </v-btn>
       
       <v-spacer></v-spacer>
 
-      <v-btn 
-        v-if="article.isLike === true"
-        fab
-        small
-        text
-        color="primary"
-      >
-        <v-icon>{{ icons.like }}</v-icon>
-      </v-btn>
-
-      <v-btn 
-        v-if="article.isLike === false"
-        fab
-        small
-        text
-        color="primary"
-      >
-        <v-icon>{{ icons.dislike }}</v-icon>
-      </v-btn>
+      <user-raiting-btn 
+        v-if="article.isLike"
+        :isLike="article.isLike"
+      />
 
       <bookmark-btn
         v-if="!article.isMyArticle"
@@ -61,16 +47,15 @@
         @bookmark="bookmark"
       />
 
-      <v-btn 
-        v-if="article.publish === false"
-        fab
-        small
-        text
-        color="primary"
+      <edit-btn 
+        v-if="article.isMyArticle && article.publish === false"
         @click="edit"
-      >
-        <v-icon>{{ icons.mdiPen }}</v-icon>
-      </v-btn>
+      />
+
+      <delete-btn 
+        v-if="article.isMyArticle"
+        @click="del"
+      />
 
       <v-btn text>
         <v-icon>{{ icons.mdiEye }}</v-icon>
@@ -86,18 +71,21 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
 const App = namespace('App');
 
-import { mdiEye,
-  mdiPen, mdiThumbUp,
-  mdiThumbDown, mdiDelete,
-} from '@mdi/js';
+import { mdiEye, mdiBookOpenPageVariant   } from '@mdi/js';
 
 import ArticleService from '../services/ArticleService';
 
 import BookmarkBtn from './articleActions/BookmarkBtn.vue'
+import DeleteBtn from './articleActions/DeleteBtn.vue'
+import EditBtn from './articleActions/EditBtn.vue'
+import UserArticleRaiting from './articleActions/UserArticleRaiting.vue'
 
 @Component({
   components: {
     'bookmark-btn': BookmarkBtn,
+    'delete-btn': DeleteBtn,
+    'edit-btn': EditBtn,
+    'user-raiting-btn': UserArticleRaiting,
   },
 })
 export default class ArticlePrewiev extends Vue {
@@ -112,10 +100,7 @@ export default class ArticlePrewiev extends Vue {
 
   private icons = {
     mdiEye,
-    mdiPen,
-    like: mdiThumbUp,
-    dislike: mdiThumbDown,
-    delete: mdiDelete,
+    read: mdiBookOpenPageVariant,
   }
 
   private searchByTag(tag: string) {
@@ -134,6 +119,10 @@ export default class ArticlePrewiev extends Vue {
       .then((id) => {
         this.setBookmarkStatus({articleId: this.article.id, status: false})
       })
+  }
+
+  private del() {
+    // удаление статьи
   }
 
   private edit() {
