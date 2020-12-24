@@ -46,7 +46,7 @@ class ArticleService {
   }
 
   public update(id: string, data: any) {
-    return API.patch(`${API_URL}/${id}`, { headers: authHeader(), body: JSON.stringify(data) });
+    return API.patch(`${API_URL}/${id}`, data, { headers: authHeader() });
   }
 
   public remove(id: string) {

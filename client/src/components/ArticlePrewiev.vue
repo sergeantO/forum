@@ -98,6 +98,9 @@ export default class ArticlePrewiev extends Vue {
   @App.Mutation
   private setBookmarkStatus!: (data: {articleId: string, status: boolean}) => void
 
+  @App.Mutation
+  private deleteArticle!: (articleId: string) => void
+
   private icons = {
     mdiEye,
     read: mdiBookOpenPageVariant,
@@ -124,7 +127,7 @@ export default class ArticlePrewiev extends Vue {
   private del() {
     ArticleService.remove(this.article.id)
       .then((data) => {
-        console.log(data)
+        this.deleteArticle(this.article.id)
       })
   }
 

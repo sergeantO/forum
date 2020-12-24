@@ -134,9 +134,20 @@ let getOne = async (req, res) => {
 let update = async (req, res) => {
   const articleId = req.params.articleId
   const updatedArticle = req.body
+  console.log(updatedArticle)
+
+  const ratings = updatedArticle.tags.reduce((map, tag) => {
+    map[tag] = 0;
+    return map;
+  }, {})
+  updatedArticle.ratings = ratings
+  delete updatedArticle.tags
+
+  console.log(updatedArticle)
+
   try{
-    await Article.findByIdAndUpdate(articleId, updatedArticle)
-    res.status(200).json(updatedArticle)
+    const article = await Article.findByIdAndUpdate(articleId, updatedArticle)
+    res.status(200).json(article)
   } catch(err) {
     return res.status(500).json({err})
   }

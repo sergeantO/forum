@@ -1,13 +1,13 @@
-import axios from "axios";
+import axios from 'axios';
 
 const BASE_URL = 'http://localhost:8080/'
 
-let API = axios.create({
+const API = axios.create({
   timeout: 1000,
 });
 
 API.interceptors.response.use(
-  (response) => response, 
+  (response) => response,
   (error) => {
     if (error.response) {
       const status = error.response.status
@@ -17,8 +17,8 @@ API.interceptors.response.use(
         return
       }
     }
-    throw error;
-  }
+    throw error
+  },
 );
 
 export default API

@@ -42,6 +42,11 @@ class App extends VuexModule {
   }
 
   @Mutation
+  public deleteArticle(articleId: string) {
+    this.myArticleList = this.myArticleList.filter((article) => article.id !== articleId)
+  }
+
+  @Mutation
   public setArticleList(articles: ArticleListType) {
     this.articleList = articles
   }

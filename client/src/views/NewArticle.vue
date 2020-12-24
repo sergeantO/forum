@@ -75,7 +75,6 @@ export default class NewArticle extends Vue {
     } else {
       ArticleService.getOne(this.id)
         .then((data) => {
-          console.log(data)
           this.image.url = data.image
           this.title = data.title
           this.tags = data.tags
@@ -105,13 +104,27 @@ export default class NewArticle extends Vue {
           tags: this.tags,
           publish: this.publish,
         }
-        ArticleService.create(data).then((response) => {
-          if (response.status === 201) {
-            this.$router.push('/my-articles')
-          }
-        }).catch((err) => {
-          // console.error(err) // todo вывести плашку
-        })
+        if (this.id === undefined) {
+          ArticleService.create(data)
+            .then((response) => {
+              if (response.status === 201) {
+                this.$router.push('/my-articles')
+              }
+            })
+            .catch((err) => {
+              // console.error(err) // todo вывести плашку
+            })
+        } else {
+          ArticleService.update(this.id, data)
+            .then((response) => {
+              if (response.status === 200) {
+                  this.$router.push('/my-articles')
+                }
+              }).catch((err) => {
+                // console.error(err) // todo вывести плашку
+              })
+        }
+
       })
   }
 }
