@@ -27,7 +27,7 @@ import {
 @Component
 export default class TagsProvider extends Vue {
   @Prop({ default: true, type: Boolean })
-  private readonly isSearch: boolean
+  private readonly isSearch: boolean = true
 
   @Prop()
   private tags!: string[]
@@ -56,7 +56,7 @@ export default class TagsProvider extends Vue {
 
   @Watch('selectedTags')
   private onChengeSelectedTags(val: string[]) {
-    let newTags = val.map((v) => v.trim()).filter((v) => !!v)
+    const newTags = val.map((v) => v.trim()).filter((v) => !!v)
     this.$emit('update:tags', newTags)
   }
 }
